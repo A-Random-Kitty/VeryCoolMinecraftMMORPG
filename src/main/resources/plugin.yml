@@ -1,0 +1,4 @@
+name: VeryCoolMinecraftMMORPG
+version: '1.0.0'
+main: me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG
+api-version: '1.21'
