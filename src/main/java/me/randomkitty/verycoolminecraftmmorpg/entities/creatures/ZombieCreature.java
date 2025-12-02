@@ -1,4 +1,14 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.creatures;
 
-public class ZombieCreature {
+import org.bukkit.Location;
+
+public class ZombieCreature  {
+
+    protected ZombieCreature(Location location) {
+       // super(EntityType.ZOMBIE, location);
+    }
+
+    protected void registerGoals() {
+
+    }
 }

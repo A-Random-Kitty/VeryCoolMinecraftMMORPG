@@ -1,4 +1,4 @@
-package me.randomkitty.verycoolminecraftmmorpg.entities;
+package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
 
 import net.minecraft.network.chat.Component;
@@ -31,7 +31,7 @@ public abstract class CustomCreature extends PathfinderMob {
     }
 
     public void updateDisplayName() {
-        this.setCustomName(Component.literal(baseName + ChatColor.RED + " " + this.getHealth() + "/" + this.getMaxHealth()));
+        this.setCustomName(Component.literal(baseName + ChatColor.RED + " " + String.format("%.1f", this.getHealth()) + "/" + String.format("%.1f", this.getMaxHealth())));
     }
 
     public void spawn(Location location) {

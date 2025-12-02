@@ -1,21 +1,11 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.sheep.Sheep;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.bukkit.ChatColor;
@@ -24,15 +14,14 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class SheepCreature extends Sheep {
+public abstract class CustomSheep extends Sheep {
 
     protected String baseName;
     public boolean shearable;
 
-    public SheepCreature(Location location) {
+    public CustomSheep(Location location) {
         super(EntityType.SHEEP, ((CraftWorld) location.getWorld()).getHandle());
         this.baseName = "Sheep";
         this.shearable = false;
