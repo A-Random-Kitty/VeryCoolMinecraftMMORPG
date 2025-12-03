@@ -1,7 +1,5 @@
 package me.randomkitty.verycoolminecraftmmorpg.item;
 
-import me.randomkitty.funnyminecraftmmo.items.ItemType;
-import me.randomkitty.funnyminecraftmmo.items.Rarity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;

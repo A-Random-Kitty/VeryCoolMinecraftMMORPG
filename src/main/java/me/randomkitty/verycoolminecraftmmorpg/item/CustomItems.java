@@ -1,7 +1,6 @@
 package me.randomkitty.verycoolminecraftmmorpg.item;
 
-import me.randomkitty.funnyminecraftmmo.FunnyMinecraftMMO;
-import me.randomkitty.funnyminecraftmmo.items.ItemType;
+import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -12,7 +11,7 @@ import java.util.Map;
 
 public class CustomItems {
     private static final Map<String, CustomItem> items = new HashMap<>();
-    private static final NamespacedKey CUSTOM_ITEM_KEY = new NamespacedKey(FunnyMinecraftMMO.INSTANCE, "KEY");
+    private static final NamespacedKey CUSTOM_ITEM_KEY = new NamespacedKey(VeryCoolMinecraftMMORPG.NAMESPACE, "KEY");
 
     public static final CustomItem SHARP_STICK;
 

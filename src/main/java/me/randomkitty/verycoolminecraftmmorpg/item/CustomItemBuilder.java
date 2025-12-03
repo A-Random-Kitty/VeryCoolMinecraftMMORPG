@@ -1,7 +1,5 @@
 package me.randomkitty.verycoolminecraftmmorpg.item;
 
-import me.randomkitty.funnyminecraftmmo.items.ItemType;
-import me.randomkitty.funnyminecraftmmo.items.Rarity;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
 
