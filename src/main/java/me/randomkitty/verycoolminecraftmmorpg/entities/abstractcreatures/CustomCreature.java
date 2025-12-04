@@ -1,10 +1,14 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
 
+import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
+import me.randomkitty.verycoolminecraftmmorpg.util.LootUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -14,13 +18,23 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class CustomCreature extends PathfinderMob {
 
     protected String baseName;
+
+    protected List<CustomEntityDefaultDrop> defaultDrops = new ArrayList<>();
+    protected List<CustomEntityRareDrop> rareDrops = new ArrayList<>();
+
     private volatile CraftEntity bukkitEntity;
 
     public CustomCreature(EntityType<? extends PathfinderMob> type, Level level) {
@@ -38,6 +52,28 @@ public abstract class CustomCreature extends PathfinderMob {
         this.setPos(location.getX(), location.getY(), location.getZ());
         this.level().addFreshEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
+
+    @Override
+    protected EntityDeathEvent dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
+
+        if (this.getLastHurtByPlayer() != null) {
+            Player player = (Player) this.getLastHurtByPlayer().getBukkitEntity();
+
+            LootUtil.givePlayerKillRewards(player, rareDrops, defaultDrops, this);
+        }
+
+        // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way
+        EntityDeathEvent deathEvent = CraftEventFactory.callEntityDeathEvent(this, damageSource, this.drops, () -> {
+            LivingEntity killer = this.getKillCredit();
+            if (killer != null) {
+                killer.awardKillScore(this, damageSource);
+            }
+        });
+
+        this.drops = new ArrayList<>();
+        return deathEvent;
+    }
+
 
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {

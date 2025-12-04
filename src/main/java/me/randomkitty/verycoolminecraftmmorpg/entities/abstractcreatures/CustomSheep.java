@@ -2,7 +2,7 @@ package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
-import me.randomkitty.verycoolminecraftmmorpg.util.PlayerUtil;
+import me.randomkitty.verycoolminecraftmmorpg.util.LootUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -10,7 +10,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.sheep.Sheep;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.bukkit.ChatColor;
@@ -23,7 +22,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class CustomSheep extends Sheep {
@@ -36,7 +34,6 @@ public abstract class CustomSheep extends Sheep {
 
     public CustomSheep(Location location) {
         super(EntityType.SHEEP, ((CraftWorld) location.getWorld()).getHandle());
-        this.baseName = "Sheep";
         this.shearable = false;
     }
 
@@ -64,26 +61,11 @@ public abstract class CustomSheep extends Sheep {
     @Override
     protected EntityDeathEvent dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
 
-        if (this.getLastHurtByPlayer() == null) {
+        if (this.getLastHurtByPlayer() != null) {
             Player player = (Player) this.getLastHurtByPlayer().getBukkitEntity();
 
-            for (CustomEntityRareDrop rareDrop : rareDrops) {
-                if (rareDrop.shouldDrop()) {
-                    
-                }
-            }
-
-            for (CustomEntityDefaultDrop defaultDrop : defaultDrops) {
-                
-            }
-
-
+            LootUtil.givePlayerKillRewards(player, rareDrops, defaultDrops, this);
         }
-
-
-
-
-
 
         // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way
         EntityDeathEvent deathEvent = CraftEventFactory.callEntityDeathEvent(this, damageSource, this.drops, () -> {
@@ -91,7 +73,6 @@ public abstract class CustomSheep extends Sheep {
             if (killer != null) {
                 killer.awardKillScore(this, damageSource);
             }
-
         });
 
         this.drops = new ArrayList<>();

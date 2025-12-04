@@ -14,10 +14,13 @@ public class GrassySheep extends CustomSheep {
 
     public GrassySheep(Location location) {
         super(location);
+
         setColor(DyeColor.LIME);
         baseName = ChatColor.GREEN + "Grassy Sheep";
+
         getAttribute(Attributes.MAX_HEALTH).setBaseValue(25);
         setHealth(25);
+
         updateDisplayName();
     }
 
