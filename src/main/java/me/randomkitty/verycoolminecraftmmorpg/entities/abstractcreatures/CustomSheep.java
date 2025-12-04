@@ -1,5 +1,7 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
+import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -7,6 +9,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.sheep.Sheep;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.bukkit.ChatColor;
@@ -25,6 +28,9 @@ public abstract class CustomSheep extends Sheep {
     protected String baseName;
     public boolean shearable;
 
+    protected List<CustomEntityDefaultDrop> defaultDrops = new ArrayList<>();
+    protected List<CustomEntityRareDrop> rareDrops = new ArrayList<>();
+
     public CustomSheep(Location location) {
         super(EntityType.SHEEP, ((CraftWorld) location.getWorld()).getHandle());
         this.baseName = "Sheep";
@@ -33,6 +39,7 @@ public abstract class CustomSheep extends Sheep {
 
     @Override
     protected void customServerAiStep(ServerLevel level) {
+        // override to prevent error because there is no eat grass goal
     }
 
     @Override
@@ -55,8 +62,13 @@ public abstract class CustomSheep extends Sheep {
     protected EntityDeathEvent dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
         boolean flag = this.lastHurtByPlayerMemoryTime > 0;
 
-        
 
+        for (CustomEntityDefaultDrop defaultDrop : defaultDrops) {
+            ItemStack item = ItemStack.fromBukkitCopy(defaultDrop.getDrop());
+
+        }
+
+        // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way
         EntityDeathEvent deathEvent = CraftEventFactory.callEntityDeathEvent(this, damageSource, this.drops, () -> {
             LivingEntity killer = this.getKillCredit();
             if (killer != null) {
@@ -65,7 +77,6 @@ public abstract class CustomSheep extends Sheep {
 
         });
 
-        this.postDeathDropItems(deathEvent);
         this.drops = new ArrayList();
         return deathEvent;
     }
