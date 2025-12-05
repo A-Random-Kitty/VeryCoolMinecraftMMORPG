@@ -2,7 +2,7 @@ package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
-import me.randomkitty.verycoolminecraftmmorpg.util.LootUtil;
+import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -67,7 +67,7 @@ public abstract class CustomSheep extends Sheep {
         if (this.getLastHurtByPlayer() != null) {
             Player player = (Player) this.getLastHurtByPlayer().getBukkitEntity();
 
-            LootUtil.givePlayerKillRewards(player, rareDrops, defaultDrops, this);
+            ItemDropUtil.givePlayerKillRewards(player, rareDrops, defaultDrops, this);
         }
 
         // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way

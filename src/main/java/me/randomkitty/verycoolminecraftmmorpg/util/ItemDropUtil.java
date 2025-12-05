@@ -14,18 +14,16 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-
-public class LootUtil {
-
+public class ItemDropUtil {
     public static void givePlayerKillRewards(Player player, List<CustomEntityRareDrop> rareDrops, List<CustomEntityDefaultDrop> defaultDrops, net.minecraft.world.entity.Entity entity) {
         for (CustomEntityRareDrop rareDrop : rareDrops) {
             if (rareDrop.shouldDrop()) {
-                LootUtil.givePlayerLootOrDrop(player, rareDrop.getItem(), new Location(entity.level().getWorld(), entity.getX(), entity.getY(), entity.getZ()));
+                givePlayerLootOrDrop(player, rareDrop.getItem(), new Location(entity.level().getWorld(), entity.getX(), entity.getY(), entity.getZ()));
             }
         }
 
         for (CustomEntityDefaultDrop defaultDrop : defaultDrops) {
-            LootUtil.givePlayerLootOrDrop(player, defaultDrop.getDrop(), new Location(entity.level().getWorld(), entity.getX(), entity.getY(), entity.getZ()));
+            givePlayerLootOrDrop(player, defaultDrop.getDrop(), new Location(entity.level().getWorld(), entity.getX(), entity.getY(), entity.getZ()));
         }
     }
 
