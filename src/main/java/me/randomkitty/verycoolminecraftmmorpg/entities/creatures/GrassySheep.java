@@ -1,6 +1,9 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.creatures;
 
+import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomSheep;
+import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
@@ -12,6 +15,9 @@ import org.bukkit.Location;
 
 public class GrassySheep extends CustomSheep {
 
+    private static CustomEntityDefaultDrop muttonDrop = new CustomEntityDefaultDrop(2, 3, CustomItems.MUTTON);
+    private static CustomEntityRareDrop bladeOfGrassDrop = new CustomEntityRareDrop(0.05f, CustomItems.BLADE_OF_GRASS);
+
     public GrassySheep(Location location) {
         super(location);
 
@@ -20,6 +26,10 @@ public class GrassySheep extends CustomSheep {
 
         getAttribute(Attributes.MAX_HEALTH).setBaseValue(25);
         setHealth(25);
+
+        defaultDrops.add(muttonDrop);
+
+        rareDrops.add(bladeOfGrassDrop);
 
         updateDisplayName();
     }

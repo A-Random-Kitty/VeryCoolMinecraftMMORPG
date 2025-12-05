@@ -20,6 +20,11 @@ public class PlayerAttributes {
 
     public static PlayerAttributes getAttributes(Player player) { return playerAttributes.get(player); }
 
+    public static void calculateAttributes(Player player) {
+        PlayerAttributes attributes = getAttributes(player);
+        attributes.calculateAttributes();
+    }
+
     private static final int minDisplayHealth = 20;
     private static final int maxDisplayHealth = 40;
 
@@ -34,7 +39,6 @@ public class PlayerAttributes {
 
     private PlayerAttributes(Player player) {
         this.player = player;
-        calculateAttributes();
     }
 
     public double getDisplayMaxHealth() {
@@ -45,9 +49,9 @@ public class PlayerAttributes {
         return Math.ceil(health/maxHealth * getDisplayMaxHealth());
     }
 
-    public static void calculateAttributes(Player player) {
-        PlayerAttributes
 
-        ItemStack hand = player
+
+    public void calculateAttributes() {
+
     }
 }

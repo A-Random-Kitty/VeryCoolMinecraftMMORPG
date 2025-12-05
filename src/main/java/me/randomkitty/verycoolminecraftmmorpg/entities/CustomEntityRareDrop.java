@@ -22,6 +22,6 @@ public class CustomEntityRareDrop {
     }
 
     public boolean shouldDrop() {
-        return random.nextFloat() > chance;
+        return random.nextFloat() <= chance;
     }
 }

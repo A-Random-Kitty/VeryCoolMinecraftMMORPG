@@ -18,21 +18,17 @@ public class FakeItemEntity extends ItemEntity {
     public FakeItemEntity(Level level, double posX, double posY, double posZ, ItemStack stack) {
         super(level, posX, posY, posZ, stack);
         // 3 seconds (60 ticks) before despawn
-        this.age = 5940;
+        this.age = 5965;
         this.setNeverPickUp();
+
     }
 
-    @Override
-    public void inactiveTick() {
-        // Lazy loaded, can just be deleted
-        this.discard(EntityRemoveEvent.Cause.DESPAWN);
-    }
+
 
     @Override
     public void playerTouch(Player entity) {
         // Will never do anything so override for performance
     }
-
 
 
 }

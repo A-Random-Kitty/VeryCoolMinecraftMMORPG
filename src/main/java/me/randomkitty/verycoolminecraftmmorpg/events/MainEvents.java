@@ -18,7 +18,7 @@ public class MainEvents implements Listener {
 
         PlayerAttributes.initPlayer(player);
 
-        event.joinMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text("joined the game").color(NamedTextColor.GREEN)))
+        event.joinMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text(" joined the game").color(NamedTextColor.GREEN)));
     }
 
     @EventHandler
@@ -27,6 +27,6 @@ public class MainEvents implements Listener {
 
         PlayerAttributes.removePlayer(player);
 
-        event.quitMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text("left the game").color(NamedTextColor.GREEN)))
+        event.quitMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text(" left the game").color(NamedTextColor.GREEN)));
     }
 }

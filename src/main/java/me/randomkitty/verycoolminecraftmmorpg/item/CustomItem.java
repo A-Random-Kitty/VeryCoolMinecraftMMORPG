@@ -1,11 +1,15 @@
 package me.randomkitty.verycoolminecraftmmorpg.item;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.FoodProperties;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.FoodComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,18 +58,18 @@ public class CustomItem {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(Component.text(name, rarity.getColor()));
+        meta.displayName(Component.text(name, rarity.getColor()).decoration(TextDecoration.ITALIC, false));
 
         {
             List<Component> lore = new ArrayList<>();
             lore.add(Component.empty());
 
-            if (damage != 0) { lore.add(Component.text("Damage: ").color(NamedTextColor.WHITE).append(Component.text(damage).color(NamedTextColor.RED))); }
-            if (criticalDamage != 0) { lore.add(Component.text("Critical Damage: ").color(NamedTextColor.WHITE).append(Component.text(criticalDamage).color(NamedTextColor.BLUE))); }
-            if (criticalChance != 0) { lore.add(Component.text("Critical Chance: ").color(NamedTextColor.WHITE).append(Component.text(criticalChance).color(NamedTextColor.BLUE))); }
-            if (health != 0) { lore.add(Component.text("Health: ").color(NamedTextColor.WHITE).append(Component.text(health).color(NamedTextColor.RED))); }
-            if (defense != 0) { lore.add(Component.text("Defence: ").color(NamedTextColor.WHITE).append(Component.text(defense).color(NamedTextColor.GREEN))); }
-            if (intelligence != 0) { lore.add(Component.text("Intelligence: ").color(NamedTextColor.WHITE).append(Component.text(intelligence).color(NamedTextColor.AQUA))); }
+            if (damage != 0) { lore.add(Component.text("Damage: ").color(NamedTextColor.WHITE).append(Component.text(damage).color(NamedTextColor.RED)).decoration(TextDecoration.ITALIC, false)); }
+            if (criticalDamage != 0) { lore.add(Component.text("Critical Damage: ").color(NamedTextColor.WHITE).append(Component.text(criticalDamage).color(NamedTextColor.BLUE)).decoration(TextDecoration.ITALIC, false)); }
+            if (criticalChance != 0) { lore.add(Component.text("Critical Chance: ").color(NamedTextColor.WHITE).append(Component.text(criticalChance).color(NamedTextColor.BLUE)).decoration(TextDecoration.ITALIC, false)); }
+            if (health != 0) { lore.add(Component.text("Health: ").color(NamedTextColor.WHITE).append(Component.text(health).color(NamedTextColor.RED)).decoration(TextDecoration.ITALIC, false)); }
+            if (defense != 0) { lore.add(Component.text("Defence: ").color(NamedTextColor.WHITE).append(Component.text(defense).color(NamedTextColor.GREEN)).decoration(TextDecoration.ITALIC, false)); }
+            if (intelligence != 0) { lore.add(Component.text("Intelligence: ").color(NamedTextColor.WHITE).append(Component.text(intelligence).color(NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false)); }
 
             if (!lore.getLast().equals(Component.empty())) { lore.add(Component.empty()); }
 
@@ -75,12 +79,17 @@ public class CustomItem {
 
             if (!lore.getLast().equals(Component.empty())) { lore.add(Component.empty()); }
 
-            lore.add(Component.text(rarity.getText() + " " + type.getText()).color(rarity.getColor()));
+            lore.add(Component.text(rarity.getText() + " " + type.getText()).color(rarity.getColor()).decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
 
             meta.lore(lore);
         }
 
+        meta.setMaxStackSize(maxStackSize);
+
         item.setItemMeta(meta);
+
+        item.unsetData(DataComponentTypes.CONSUMABLE);
+
         return item;
     }
 
