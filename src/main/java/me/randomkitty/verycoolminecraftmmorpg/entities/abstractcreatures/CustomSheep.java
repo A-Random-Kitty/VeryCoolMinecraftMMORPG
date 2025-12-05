@@ -35,6 +35,9 @@ public abstract class CustomSheep extends Sheep {
     public CustomSheep(Location location) {
         super(EntityType.SHEEP, ((CraftWorld) location.getWorld()).getHandle());
         this.shearable = false;
+
+        this.setCustomNameVisible(true);
+        this.persist = false;
     }
 
     @Override
