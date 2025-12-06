@@ -1,6 +1,6 @@
 package me.randomkitty.verycoolminecraftmmorpg.events;
 
-import io.papermc.paper.event.player.PlayerClientLoadedWorldEvent;
+import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
 import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -16,7 +16,9 @@ public class MainEvents implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
 
+        PlayerData.initPlayer(player);
         PlayerAttributes.initPlayer(player);
+
 
         event.joinMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text(" joined the game").color(NamedTextColor.GREEN)));
     }
@@ -25,6 +27,8 @@ public class MainEvents implements Listener {
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
+        PlayerData.savePlayer(player);
+        PlayerData.removePlayer(player);
         PlayerAttributes.removePlayer(player);
 
         event.quitMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text(" left the game").color(NamedTextColor.GREEN)));

@@ -12,9 +12,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
 
     public static final String NAMESPACE = "coolrpg";
+    public static VeryCoolMinecraftMMORPG INSTANCE;
 
     @Override
     public void onEnable() {
+
+        INSTANCE = this;
+
         PluginManager manager = this.getServer().getPluginManager();
         manager.registerEvents(new GameEvents(), this);
         manager.registerEvents(new MainEvents(), this);
