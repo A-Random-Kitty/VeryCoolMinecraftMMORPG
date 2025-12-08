@@ -1,54 +1,43 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
+
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
 import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.sheep.Sheep;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CustomSheep extends Sheep implements CustomCreature {
+public abstract class CustomPathfinderMob extends PathfinderMob implements CustomCreature {
 
-    public boolean shearable;
-    public boolean dyeable;
+    private volatile CraftEntity bukkitEntity;
 
-    public CustomSheep(Location location) {
-        super(EntityType.SHEEP, ((CraftWorld) location.getWorld()).getHandle());
-        this.shearable = false;
-        this.dyeable = false;
-
+    public CustomPathfinderMob(EntityType<? extends PathfinderMob> type, Level level) {
+        super(type, level);
         this.setCustomNameVisible(true);
+        updateDisplayName();
         this.persist = false;
-    }
-
-    @Override
-    protected void customServerAiStep(ServerLevel level) {
-        // override to prevent error because there is no eat grass goal
-    }
-
-    @Override
-    public void shear(ServerLevel level, SoundSource source, ItemStack shears, List<ItemStack> drops) {
-        if (shearable) {
-            super.shear(level, source, shears, drops);
-        }
     }
 
     public void updateDisplayName() {
@@ -82,6 +71,7 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
         return deathEvent;
     }
 
+
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
         boolean idk = super.hurtServer(level, damageSource, amount);
@@ -100,5 +90,23 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
     @Override
     public void saveWithoutId(ValueOutput output, boolean includeAll, boolean includeNonSaveable, boolean forceSerialization) {
         // stop the entity from being saved because its easier than figuring how how the heck to save it properly
+    }
+
+    @Override
+    public @NotNull CraftEntity getBukkitEntity() {
+        if (this.bukkitEntity == null) {
+            synchronized(this) {
+                if (this.bukkitEntity == null) {
+                    return bukkitEntity = new CraftLivingEntity((CraftServer) Bukkit.getServer(), this);
+                }
+            }
+        }
+
+        return this.bukkitEntity;
+    }
+
+    @Override
+    public @NotNull CraftLivingEntity getBukkitLivingEntity() {
+        return (CraftLivingEntity) this.getBukkitEntity();
     }
 }

@@ -2,6 +2,9 @@ package me.randomkitty.verycoolminecraftmmorpg.player.attributes;
 
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItemInstance;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
+import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -19,8 +22,6 @@ public class PlayerAttributes {
 
     public static void removePlayer(Player player) {
         playerAttributes.remove(player);
-
-
     }
 
     public static PlayerAttributes getAttributes(Player player) { return playerAttributes.get(player); }
@@ -62,7 +63,7 @@ public class PlayerAttributes {
         critDamage = 0;
 
         CustomItemInstance mainHand = CustomItems.fromItemStack(player.getInventory().getItemInMainHand());
-        if (mainHand.baseItem.getSlot() == EquipmentSlot.HAND)
+        if (mainHand != null && mainHand.baseItem.getSlot() == EquipmentSlot.HAND)
             addAttributes(mainHand);
 
         {
@@ -71,8 +72,8 @@ public class PlayerAttributes {
             totalCriticalDamage = damage * (1 + critDamage);
         }
 
-
         player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(getDisplayMaxHealth());
+        updateActionbar();
     }
 
     private void addAttributes(CustomItemInstance item) {
@@ -82,5 +83,9 @@ public class PlayerAttributes {
         damage += item.baseItem.getDamage();
         critChance = item.baseItem.getCriticalChance();
         critDamage = item.baseItem.getCriticalDamage();
+    }
+
+    public void updateActionbar() {
+        player.sendActionBar(Component.text(StringUtil.formatedDouble(player.getHealth()) + "/" + StringUtil.formatedDouble(health) ).color(NamedTextColor.RED));
     }
 }

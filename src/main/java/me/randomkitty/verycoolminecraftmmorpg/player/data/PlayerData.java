@@ -7,6 +7,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +35,29 @@ public class PlayerData {
     }
     public static void savePlayer(Player player) { playerDataMap.get(player).save(); }
     public static PlayerData getAttributes(Player player) { return playerDataMap.get(player); }
+
+    private static BukkitTask autoSaveTask;
+
+    public static void startAutoSave() {
+        autoSaveTask =  Bukkit.getScheduler().runTaskTimerAsynchronously(VeryCoolMinecraftMMORPG.INSTANCE, new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                saveAll();
+            }
+        }, 20 * 60 * 5, 20 * 60 * 5);
+    }
+
+    public static void stopAutoSave() {
+        autoSaveTask.cancel();
+    }
+
+    public static void saveAll() {
+        for (PlayerData data : playerDataMap.values()) {
+            data.save();
+        }
+    }
+
 
     private final UUID uuid;
 
@@ -65,8 +90,6 @@ public class PlayerData {
             // Add Data Values
             dataValues.add(new PlayerCurrency(player));
         }
-
-
 
         for (PlayerDataValue value : dataValues) {
             value.load(uuid, data);
