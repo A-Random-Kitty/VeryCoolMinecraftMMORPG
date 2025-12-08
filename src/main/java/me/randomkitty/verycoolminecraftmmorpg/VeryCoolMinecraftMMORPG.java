@@ -1,5 +1,6 @@
 package me.randomkitty.verycoolminecraftmmorpg;
 
+import me.randomkitty.verycoolminecraftmmorpg.commands.CustomItemCommand;
 import me.randomkitty.verycoolminecraftmmorpg.commands.TestCommand;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityType;
 import me.randomkitty.verycoolminecraftmmorpg.events.GameEvents;
@@ -24,6 +25,7 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
         manager.registerEvents(new MainEvents(), this);
 
         this.getCommand("test").setExecutor(new TestCommand());
+        this.getCommand("givecustomitem").setExecutor(new CustomItemCommand());
 
         //CustomEntityType.register();
     }

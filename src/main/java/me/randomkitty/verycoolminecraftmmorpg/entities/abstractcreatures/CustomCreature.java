@@ -4,6 +4,7 @@ package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
 import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
+import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -34,6 +35,8 @@ public abstract class CustomCreature extends PathfinderMob {
 
     protected List<CustomEntityDefaultDrop> defaultDrops = new ArrayList<>();
     protected List<CustomEntityRareDrop> rareDrops = new ArrayList<>();
+    protected double baseCoinDrop;
+    protected double baseXpDrop;
 
     private volatile CraftEntity bukkitEntity;
 
@@ -45,7 +48,7 @@ public abstract class CustomCreature extends PathfinderMob {
     }
 
     public void updateDisplayName() {
-        this.setCustomName(Component.literal(baseName + ChatColor.RED + " " + String.format("%.1f", this.getHealth()) + "/" + String.format("%.1f", this.getMaxHealth())));
+        this.setCustomName(Component.literal(baseName + ChatColor.RED + " " + StringUtil.formatedDouble(this.getHealth()) + "/" + StringUtil.formatedDouble(this.getMaxHealth())));
     }
 
     public void spawn(Location location) {
@@ -59,7 +62,8 @@ public abstract class CustomCreature extends PathfinderMob {
         if (this.getLastHurtByPlayer() != null) {
             Player player = (Player) this.getLastHurtByPlayer().getBukkitEntity();
 
-            ItemDropUtil.givePlayerKillRewards(player, rareDrops, defaultDrops, this);
+            ItemDropUtil.givePlayerMobLoot(player, rareDrops, defaultDrops, this);
+            ItemDropUtil.givePlayerCoinsAndDrop(player, baseCoinDrop, this);
         }
 
         // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way

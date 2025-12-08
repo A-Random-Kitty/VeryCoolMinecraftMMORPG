@@ -1,6 +1,9 @@
 package me.randomkitty.verycoolminecraftmmorpg.events;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import io.papermc.paper.event.entity.EntityDyeEvent;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomSheep;
+import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
 import org.bukkit.event.EventHandler;
@@ -10,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 
 import java.util.Set;
 
@@ -83,11 +87,17 @@ public class GameEvents implements Listener {
     }
 
     @EventHandler
-    public void onSheepDye(SheepDyeWoolEvent event) {
-        if (event.getEntity() instanceof CustomSheep customSheep) {
-            if (customSheep.shearable) {
+    public void onPlayerHeldItem(PlayerItemHeldEvent event) {
+        PlayerAttributes.calculateAttributes(event.getPlayer());
+    }
 
-            }
-        }
+    @EventHandler
+    public void onArmorChange(PlayerArmorChangeEvent event) {
+        PlayerAttributes.calculateAttributes(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onEntityDyed(EntityDyeEvent event) {
+        event.setCancelled(true);
     }
 }

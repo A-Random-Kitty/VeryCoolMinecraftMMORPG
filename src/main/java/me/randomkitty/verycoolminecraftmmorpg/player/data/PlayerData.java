@@ -1,6 +1,7 @@
 package me.randomkitty.verycoolminecraftmmorpg.player.data;
 
 import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
+import me.randomkitty.verycoolminecraftmmorpg.player.PlayerCurrency;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -21,6 +22,13 @@ public class PlayerData {
         playerDataMap.put(player, new PlayerData(player));
     }
     public static void removePlayer(Player player) {
+
+        PlayerData d = playerDataMap.get(player);
+
+        for (PlayerDataValue value : d.dataValues) {
+            value.unload(player.getUniqueId());
+        }
+
         playerDataMap.remove(player);
     }
     public static void savePlayer(Player player) { playerDataMap.get(player).save(); }
@@ -31,7 +39,7 @@ public class PlayerData {
     private final File dataFile;
     private final YamlConfiguration data;
 
-    private final Set<? extends PlayerDataValue> dataValues = new HashSet<>();
+    private final Set<PlayerDataValue> dataValues = new HashSet<>();
 
     private PlayerData (Player player) {
         this.uuid = player.getUniqueId();
@@ -41,7 +49,7 @@ public class PlayerData {
             this.data = YamlConfiguration.loadConfiguration(dataFile);
         } else {
             try {
-                dataFile.mkdirs();
+                playerDataFolder.mkdirs();
                 dataFile.createNewFile();
             } catch (IOException e) {
                 Bukkit.getLogger().severe("Failed to create data file for player with uuid: " + uuid);
@@ -53,9 +61,12 @@ public class PlayerData {
 
         }
 
-        // Add Data Values
+        {
+            // Add Data Values
+            dataValues.add(new PlayerCurrency(player));
+        }
 
-        //
+
 
         for (PlayerDataValue value : dataValues) {
             value.load(uuid, data);

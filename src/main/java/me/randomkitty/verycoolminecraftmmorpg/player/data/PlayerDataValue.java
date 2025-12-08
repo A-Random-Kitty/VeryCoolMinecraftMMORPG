@@ -10,4 +10,5 @@ public abstract class PlayerDataValue {
 
     protected abstract void save(UUID uuid, YamlConfiguration data);
     protected abstract void load(UUID uuid, YamlConfiguration data);
+    protected abstract void unload(UUID uuid);
 }

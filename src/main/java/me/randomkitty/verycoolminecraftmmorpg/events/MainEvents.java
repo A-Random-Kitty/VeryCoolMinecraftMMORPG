@@ -1,5 +1,7 @@
 package me.randomkitty.verycoolminecraftmmorpg.events;
 
+import io.papermc.paper.event.player.PlayerClientLoadedWorldEvent;
+import me.randomkitty.verycoolminecraftmmorpg.player.PlayerScoreboard;
 import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
 import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
 import net.kyori.adventure.text.Component;
@@ -21,6 +23,13 @@ public class MainEvents implements Listener {
 
 
         event.joinMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text(" joined the game").color(NamedTextColor.GREEN)));
+    }
+
+    @EventHandler
+    public void onPlayerLoadWorld(PlayerClientLoadedWorldEvent event) {
+        Player player = event.getPlayer();
+
+        PlayerScoreboard.applyPlayerScoreboard(player);
     }
 
     @EventHandler

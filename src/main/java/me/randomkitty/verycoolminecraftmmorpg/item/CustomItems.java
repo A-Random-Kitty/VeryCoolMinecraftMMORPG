@@ -19,16 +19,21 @@ public class CustomItems {
     public static final CustomItem BLADE_OF_GRASS;
     public static final CustomItem SHARP_STICK;
 
+    public static CustomItem get(String key) {
+        return items.get(key);
+    }
 
     private static CustomItem register(CustomItem item, String id) {
         items.put(id, item);
         return item;
     }
 
-    public @Nullable CustomItem fromItemStack(ItemStack item) {
+    public static @Nullable CustomItemInstance fromItemStack(ItemStack item) {
         String s = item.getPersistentDataContainer().get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
         if (s != null) {
-            return items.get(s);
+            CustomItem base = items.get(s);
+            // get the modifiers here once they are added
+            return new CustomItemInstance(base);
         }
 
         return null;

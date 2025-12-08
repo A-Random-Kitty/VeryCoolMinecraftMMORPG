@@ -3,6 +3,7 @@ package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
 import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
+import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -28,13 +29,17 @@ public abstract class CustomSheep extends Sheep {
 
     protected String baseName;
     public boolean shearable;
+    public boolean dyeable;
 
     protected List<CustomEntityDefaultDrop> defaultDrops = new ArrayList<>();
     protected List<CustomEntityRareDrop> rareDrops = new ArrayList<>();
+    protected double baseCoinDrop;
+    protected double baseXpDrop;
 
     public CustomSheep(Location location) {
         super(EntityType.SHEEP, ((CraftWorld) location.getWorld()).getHandle());
         this.shearable = false;
+        this.dyeable = false;
 
         this.setCustomNameVisible(true);
         this.persist = false;
@@ -53,7 +58,7 @@ public abstract class CustomSheep extends Sheep {
     }
 
     public void updateDisplayName() {
-        this.setCustomName(Component.literal(baseName + ChatColor.RED + " " + String.format("%.1f", this.getHealth()) + "/" + String.format("%.1f", this.getMaxHealth())));
+        this.setCustomName(Component.literal(baseName + ChatColor.RED + " " + StringUtil.formatedDouble(this.getHealth()) + "/" + StringUtil.formatedDouble(this.getMaxHealth())));
     }
 
     public void spawn(Location location) {
@@ -67,7 +72,8 @@ public abstract class CustomSheep extends Sheep {
         if (this.getLastHurtByPlayer() != null) {
             Player player = (Player) this.getLastHurtByPlayer().getBukkitEntity();
 
-            ItemDropUtil.givePlayerKillRewards(player, rareDrops, defaultDrops, this);
+            ItemDropUtil.givePlayerMobLoot(player, rareDrops, defaultDrops, this);
+            ItemDropUtil.givePlayerCoinsAndDrop(player, baseCoinDrop, this);
         }
 
         // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way

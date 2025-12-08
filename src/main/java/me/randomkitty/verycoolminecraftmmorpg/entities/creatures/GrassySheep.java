@@ -27,8 +27,9 @@ public class GrassySheep extends CustomSheep {
         getAttribute(Attributes.MAX_HEALTH).setBaseValue(25);
         setHealth(25);
 
+        baseCoinDrop = 5;
+        baseXpDrop = 2;
         defaultDrops.add(muttonDrop);
-
         rareDrops.add(bladeOfGrassDrop);
 
         updateDisplayName();

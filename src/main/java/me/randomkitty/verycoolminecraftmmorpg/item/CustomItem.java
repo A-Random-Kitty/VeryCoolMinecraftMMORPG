@@ -2,6 +2,7 @@ package me.randomkitty.verycoolminecraftmmorpg.item;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.FoodProperties;
+import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -64,12 +65,12 @@ public class CustomItem {
             List<Component> lore = new ArrayList<>();
             lore.add(Component.empty());
 
-            if (damage != 0) { lore.add(Component.text("Damage: ").color(NamedTextColor.WHITE).append(Component.text(damage).color(NamedTextColor.RED)).decoration(TextDecoration.ITALIC, false)); }
-            if (criticalDamage != 0) { lore.add(Component.text("Critical Damage: ").color(NamedTextColor.WHITE).append(Component.text(criticalDamage).color(NamedTextColor.BLUE)).decoration(TextDecoration.ITALIC, false)); }
-            if (criticalChance != 0) { lore.add(Component.text("Critical Chance: ").color(NamedTextColor.WHITE).append(Component.text(criticalChance).color(NamedTextColor.BLUE)).decoration(TextDecoration.ITALIC, false)); }
-            if (health != 0) { lore.add(Component.text("Health: ").color(NamedTextColor.WHITE).append(Component.text(health).color(NamedTextColor.RED)).decoration(TextDecoration.ITALIC, false)); }
-            if (defense != 0) { lore.add(Component.text("Defence: ").color(NamedTextColor.WHITE).append(Component.text(defense).color(NamedTextColor.GREEN)).decoration(TextDecoration.ITALIC, false)); }
-            if (intelligence != 0) { lore.add(Component.text("Intelligence: ").color(NamedTextColor.WHITE).append(Component.text(intelligence).color(NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false)); }
+            if (damage != 0) { lore.add(Component.text("Damage: ").color(NamedTextColor.WHITE).append(Component.text(StringUtil.longFormatedDouble(damage)).color(NamedTextColor.RED)).decoration(TextDecoration.ITALIC, false)); }
+            if (criticalDamage != 0) { lore.add(Component.text("Critical Damage: ").color(NamedTextColor.WHITE).append(Component.text(StringUtil.longFormatedDouble(criticalDamage)).color(NamedTextColor.BLUE)).decoration(TextDecoration.ITALIC, false)); }
+            if (criticalChance != 0) { lore.add(Component.text("Critical Chance: ").color(NamedTextColor.WHITE).append(Component.text(StringUtil.longFormatedDouble(criticalChance)).color(NamedTextColor.BLUE)).decoration(TextDecoration.ITALIC, false)); }
+            if (health != 0) { lore.add(Component.text("Health: ").color(NamedTextColor.WHITE).append(Component.text(StringUtil.longFormatedDouble(health)).color(NamedTextColor.RED)).decoration(TextDecoration.ITALIC, false)); }
+            if (defense != 0) { lore.add(Component.text("Defence: ").color(NamedTextColor.WHITE).append(Component.text(StringUtil.longFormatedDouble(defense)).color(NamedTextColor.GREEN)).decoration(TextDecoration.ITALIC, false)); }
+            if (intelligence != 0) { lore.add(Component.text("Intelligence: ").color(NamedTextColor.WHITE).append(Component.text(StringUtil.longFormatedDouble(intelligence)).color(NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false)); }
 
             if (!lore.getLast().equals(Component.empty())) { lore.add(Component.empty()); }
 
