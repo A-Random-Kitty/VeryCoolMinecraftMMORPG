@@ -39,7 +39,7 @@ public class PlayerData {
     private static BukkitTask autoSaveTask;
 
     public static void startAutoSave() {
-        autoSaveTask =  Bukkit.getScheduler().runTaskTimerAsynchronously(VeryCoolMinecraftMMORPG.INSTANCE, new BukkitRunnable() {
+        autoSaveTask =  Bukkit.getScheduler().runTaskTimerAsynchronously(VeryCoolMinecraftMMORPG.INSTANCE, new Runnable() {
 
             @Override
             public void run() {

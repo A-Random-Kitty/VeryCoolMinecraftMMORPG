@@ -6,16 +6,21 @@ import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomItem {
+
+    protected final String key;
 
     protected final Material material;
     protected final int maxStackSize;
@@ -36,6 +41,8 @@ public class CustomItem {
     protected final double intelligence;
 
     public CustomItem (CustomItemBuilder builder) {
+        this.key = builder.key;
+
         this.material = builder.material;
         this.maxStackSize = builder.maxStackSize;
 
@@ -62,6 +69,7 @@ public class CustomItem {
         meta.displayName(Component.text(name, rarity.getColor()).decoration(TextDecoration.ITALIC, false));
 
         {
+            // The lore (those who lore)
             List<Component> lore = new ArrayList<>();
             lore.add(Component.empty());
 
@@ -86,13 +94,25 @@ public class CustomItem {
         }
 
         meta.setMaxStackSize(maxStackSize);
+        meta.setUnbreakable(true);
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ARMOR_TRIM, ItemFlag.HIDE_DYE);
 
         item.setItemMeta(meta);
 
-        item.unsetData(DataComponentTypes.CONSUMABLE);
+        // Data Stuff
+        {
+            item.unsetData(DataComponentTypes.CONSUMABLE);
+
+            item.editPersistentDataContainer(p -> {
+                p.set(CustomItems.CUSTOM_ITEM_KEY, PersistentDataType.STRING, this.key);
+            });
+
+        }
 
         return item;
     }
+
+    public String getKey() { return key; }
 
     public Rarity getRarity() {
         return rarity;

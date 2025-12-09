@@ -8,6 +8,8 @@ import java.util.List;
 
 public class CustomItemBuilder {
 
+    public String key;
+
     public Material material = Material.BARRIER;
     public int maxStackSize = 64;
 
@@ -25,6 +27,10 @@ public class CustomItemBuilder {
     public double health = 0;
     public double defense = 0;
     public double intelligence = 0;
+
+    public CustomItemBuilder(String key) {
+        this.key = key;
+    }
 
     public CustomItemBuilder setMaterial(Material material) {
         this.material = material;

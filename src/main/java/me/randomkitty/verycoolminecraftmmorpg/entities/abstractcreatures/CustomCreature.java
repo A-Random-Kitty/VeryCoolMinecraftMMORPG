@@ -14,6 +14,6 @@ public interface CustomCreature {
 
     double getBaseCoinDrop();
     double getBaseXpDrop();
-    String baseName();
+    String getBaseName();
 
 }

@@ -9,10 +9,15 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class MainEvents implements Listener {
+
+    @EventHandler
+    public void onPrePlayerJoin(AsyncPlayerPreLoginEvent event) {
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
@@ -29,6 +34,7 @@ public class MainEvents implements Listener {
     public void onPlayerLoadWorld(PlayerClientLoadedWorldEvent event) {
         Player player = event.getPlayer();
 
+        PlayerAttributes.calculateAttributes(player);
         PlayerScoreboard.applyPlayerScoreboard(player);
     }
 

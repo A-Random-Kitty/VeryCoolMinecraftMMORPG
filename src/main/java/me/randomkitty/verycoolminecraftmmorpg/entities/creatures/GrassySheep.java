@@ -18,19 +18,20 @@ public class GrassySheep extends CustomSheep {
     private static CustomEntityDefaultDrop muttonDrop = new CustomEntityDefaultDrop(2, 3, CustomItems.MUTTON);
     private static CustomEntityRareDrop bladeOfGrassDrop = new CustomEntityRareDrop(0.05f, CustomItems.BLADE_OF_GRASS);
 
+    static  {
+        defaultDrops.add(muttonDrop);
+        rareDrops.add(bladeOfGrassDrop);
+    }
+
     public GrassySheep(Location location) {
         super(location);
 
         setColor(DyeColor.LIME);
-        baseName = ChatColor.GREEN + "Grassy Sheep";
 
         getAttribute(Attributes.MAX_HEALTH).setBaseValue(25);
         setHealth(25);
 
-        baseCoinDrop = 5;
-        baseXpDrop = 2;
-        defaultDrops.add(muttonDrop);
-        rareDrops.add(bladeOfGrassDrop);
+
 
         updateDisplayName();
     }
@@ -42,4 +43,13 @@ public class GrassySheep extends CustomSheep {
         goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1F));
         goalSelector.addGoal(3, new RandomLookAroundGoal(this));
     }
+
+    @Override
+    public double getBaseCoinDrop() { return 5; }
+
+    @Override
+    public double getBaseXpDrop() { return 2; }
+
+    @Override
+    public String getBaseName() { return ChatColor.GREEN + "Grassy Sheep"; }
 }

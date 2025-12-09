@@ -5,9 +5,11 @@ import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +30,17 @@ public class PlayerAttributes {
 
     public static void calculateAttributes(Player player) {
         PlayerAttributes attributes = getAttributes(player);
-        attributes.calculateAttributes();
+        attributes.calculateAttributes(player.getInventory().getItemInMainHand(), player.getInventory().getArmorContents());
+    }
+
+    public static void calculateAttributes(Player player, ItemStack newMainHand) {
+        PlayerAttributes attributes = getAttributes(player);
+        attributes.calculateAttributes(newMainHand, player.getInventory().getArmorContents());
+    }
+
+    public static void calculateAttributes(Player player, ItemStack[] newArmorContents) {
+        PlayerAttributes attributes = getAttributes(player);
+        attributes.calculateAttributes(player.getInventory().getItemInMainHand(), newArmorContents);
     }
 
     private static final int minDisplayHealth = 20;
@@ -51,28 +63,32 @@ public class PlayerAttributes {
     }
 
     private double getDisplayMaxHealth() {
-        return Math.max(maxDisplayHealth, Math.min(minDisplayHealth, health / 50));
+        return Math.min(maxDisplayHealth, Math.max(minDisplayHealth, health / 50));
     }
 
-    public void calculateAttributes() {
+    public void calculateAttributes(ItemStack mainHandItemStack, ItemStack[] armorContents) {
         defense = 0;
-        health = 0;
-        intelligence = 0;
-        damage = 0;
-        critChance = 0;
-        critDamage = 0;
+        health = 100;
+        intelligence = 100;
+        damage = 5;
+        critChance = 15;
+        critDamage = 30;
 
-        CustomItemInstance mainHand = CustomItems.fromItemStack(player.getInventory().getItemInMainHand());
-        if (mainHand != null && mainHand.baseItem.getSlot() == EquipmentSlot.HAND)
-            addAttributes(mainHand);
+        if (mainHandItemStack != null) {
+            CustomItemInstance mainHand = CustomItems.fromItemStack(mainHandItemStack);
+
+            if (mainHand != null && mainHand.baseItem.getSlot() == EquipmentSlot.HAND)
+                addAttributes(mainHand);
+        }
 
         {
             // Calculate total damage
             totalDamage = damage;
-            totalCriticalDamage = damage * (1 + critDamage);
+            totalCriticalDamage = damage * (1 + (critDamage / 100));
         }
 
-        player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(getDisplayMaxHealth());
+        player.setHealthScale(getDisplayMaxHealth());
+        player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(health);
         updateActionbar();
     }
 

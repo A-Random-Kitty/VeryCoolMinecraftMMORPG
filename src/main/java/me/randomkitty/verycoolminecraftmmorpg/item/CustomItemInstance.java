@@ -5,7 +5,7 @@ public class CustomItemInstance {
     public CustomItem baseItem;
 
     public CustomItemInstance(CustomItem item) {
-        baseItem = item;
+        this.baseItem = item;
     }
 
 }

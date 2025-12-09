@@ -52,7 +52,7 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
     }
 
     public void updateDisplayName() {
-        this.setCustomName(Component.literal(baseName + ChatColor.RED + " " + StringUtil.formatedDouble(this.getHealth()) + "/" + StringUtil.formatedDouble(this.getMaxHealth())));
+        this.setCustomName(Component.literal(getBaseName() + ChatColor.RED + " " + StringUtil.formatedDouble(this.getHealth()) + "/" + StringUtil.formatedDouble(this.getMaxHealth())));
     }
 
     public void spawn(Location location) {
@@ -67,7 +67,7 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
             Player player = (Player) this.getLastHurtByPlayer().getBukkitEntity();
 
             ItemDropUtil.givePlayerMobLoot(player, rareDrops, defaultDrops, this);
-            ItemDropUtil.givePlayerCoinsAndDrop(player, baseCoinDrop, this);
+            ItemDropUtil.givePlayerCoinsAndDrop(player, getBaseCoinDrop(), this);
         }
 
         // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way
