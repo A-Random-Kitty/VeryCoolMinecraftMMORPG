@@ -1,5 +1,6 @@
 package me.randomkitty.verycoolminecraftmmorpg.player.attributes;
 
+import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItemInstance;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
@@ -10,6 +11,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,19 +30,42 @@ public class PlayerAttributes {
 
     public static PlayerAttributes getAttributes(Player player) { return playerAttributes.get(player); }
 
+    private static BukkitTask displayAttributesTask;
+
+    public static void startDisplayAttributesTask() {
+        displayAttributesTask = Bukkit.getScheduler().runTaskTimer(VeryCoolMinecraftMMORPG.INSTANCE, new Runnable() {
+            @Override
+            public void run() {
+                for (PlayerAttributes attributes : playerAttributes.values()) {
+                    attributes.updateActionbar();
+                }
+            }
+        }, 30, 30);
+    }
+
+    public static void stopDisplayPlayerAttributesTask() {
+
+    }
+
     public static void calculateAttributes(Player player) {
         PlayerAttributes attributes = getAttributes(player);
-        attributes.calculateAttributes(player.getInventory().getItemInMainHand(), player.getInventory().getArmorContents());
+        if (attributes != null) {
+            attributes.calculateAttributes(player.getInventory().getItemInMainHand(), player.getInventory().getArmorContents());
+        }
     }
 
     public static void calculateAttributes(Player player, ItemStack newMainHand) {
         PlayerAttributes attributes = getAttributes(player);
-        attributes.calculateAttributes(newMainHand, player.getInventory().getArmorContents());
+        if (attributes != null) {
+            attributes.calculateAttributes(newMainHand, player.getInventory().getArmorContents());
+        }
     }
 
     public static void calculateAttributes(Player player, ItemStack[] newArmorContents) {
         PlayerAttributes attributes = getAttributes(player);
-        attributes.calculateAttributes(player.getInventory().getItemInMainHand(), newArmorContents);
+        if (attributes != null ) {
+            attributes.calculateAttributes(player.getInventory().getItemInMainHand(), newArmorContents);
+        }
     }
 
     private static final int minDisplayHealth = 20;
@@ -67,9 +92,9 @@ public class PlayerAttributes {
     }
 
     public void calculateAttributes(ItemStack mainHandItemStack, ItemStack[] armorContents) {
-        defense = 0;
-        health = 100;
-        intelligence = 100;
+        defense = 0; // 🛡
+        health = 100; // ❤
+        intelligence = 100;  // ☄
         damage = 5;
         critChance = 15;
         critDamage = 30;
@@ -102,6 +127,6 @@ public class PlayerAttributes {
     }
 
     public void updateActionbar() {
-        player.sendActionBar(Component.text(StringUtil.formatedDouble(player.getHealth()) + "/" + StringUtil.formatedDouble(health) ).color(NamedTextColor.RED));
+        player.sendActionBar(Component.text(StringUtil.formatedDouble(player.getHealth()) + "/" + StringUtil.formatedDouble(health) + "❤").color(NamedTextColor.RED));
     }
 }

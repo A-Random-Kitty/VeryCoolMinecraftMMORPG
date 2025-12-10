@@ -41,7 +41,7 @@ public abstract class CustomPathfinderMob extends PathfinderMob implements Custo
     }
 
     public void updateDisplayName() {
-        this.setCustomName(Component.literal(getBaseName() + ChatColor.RED + " " + StringUtil.formatedDouble(this.getHealth()) + "/" + StringUtil.formatedDouble(this.getMaxHealth())));
+        updateDisplayName(this);
     }
 
     public void spawn(Location location) {
@@ -49,28 +49,29 @@ public abstract class CustomPathfinderMob extends PathfinderMob implements Custo
         this.level().addFreshEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
 
+
     @Override
-    protected EntityDeathEvent dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
-
-        if (this.getLastHurtByPlayer() != null) {
-            Player player = (Player) this.getLastHurtByPlayer().getBukkitEntity();
-
-            ItemDropUtil.givePlayerMobLoot(player, rareDrops, defaultDrops, this);
-            ItemDropUtil.givePlayerCoinsAndDrop(player, getBaseCoinDrop(), this);
+    public @NotNull CraftEntity getBukkitEntity() {
+        if (this.bukkitEntity == null) {
+            synchronized(this) {
+                if (this.bukkitEntity == null) {
+                    return bukkitEntity = new CraftLivingEntity((CraftServer) Bukkit.getServer(), this);
+                }
+            }
         }
 
-        // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way
-        EntityDeathEvent deathEvent = CraftEventFactory.callEntityDeathEvent(this, damageSource, this.drops, () -> {
-            LivingEntity killer = this.getKillCredit();
-            if (killer != null) {
-                killer.awardKillScore(this, damageSource);
-            }
-        });
-
-        this.drops = new ArrayList<>();
-        return deathEvent;
+        return this.bukkitEntity;
     }
 
+    @Override
+    public @NotNull CraftLivingEntity getBukkitLivingEntity() {
+        return (CraftLivingEntity) this.getBukkitEntity();
+    }
+
+    @Override
+    protected EntityDeathEvent dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
+        return dropAllDeathLootCustom(level, damageSource, this);
+    }
 
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
@@ -90,23 +91,5 @@ public abstract class CustomPathfinderMob extends PathfinderMob implements Custo
     @Override
     public void saveWithoutId(ValueOutput output, boolean includeAll, boolean includeNonSaveable, boolean forceSerialization) {
         // stop the entity from being saved because its easier than figuring how how the heck to save it properly
-    }
-
-    @Override
-    public @NotNull CraftEntity getBukkitEntity() {
-        if (this.bukkitEntity == null) {
-            synchronized(this) {
-                if (this.bukkitEntity == null) {
-                    return bukkitEntity = new CraftLivingEntity((CraftServer) Bukkit.getServer(), this);
-                }
-            }
-        }
-
-        return this.bukkitEntity;
-    }
-
-    @Override
-    public @NotNull CraftLivingEntity getBukkitLivingEntity() {
-        return (CraftLivingEntity) this.getBukkitEntity();
     }
 }

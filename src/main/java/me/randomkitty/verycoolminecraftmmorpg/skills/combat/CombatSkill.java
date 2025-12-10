@@ -11,6 +11,9 @@ public class CombatSkill extends Skill {
 
     private static final Map<UUID, CombatSkill> playerCombatMap = new HashMap<>();
 
+    public static double getPlayerCombatXp(UUID uuid) { return playerCombatMap.get(uuid).getXp(); }
+    public static void addPlayerCombatXp(UUID uuid, double amount) { playerCombatMap.get(uuid).addXp(amount); }
+
     @Override
     public String getKey() {
         return "combat";

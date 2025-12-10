@@ -51,35 +51,18 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
         }
     }
 
-    public void updateDisplayName() {
-        this.setCustomName(Component.literal(getBaseName() + ChatColor.RED + " " + StringUtil.formatedDouble(this.getHealth()) + "/" + StringUtil.formatedDouble(this.getMaxHealth())));
-    }
-
     public void spawn(Location location) {
         this.setPos(location.getX(), location.getY(), location.getZ());
         this.level().addFreshEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
 
+    public void updateDisplayName() {
+        updateDisplayName(this);
+    }
+
     @Override
     protected EntityDeathEvent dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
-
-        if (this.getLastHurtByPlayer() != null) {
-            Player player = (Player) this.getLastHurtByPlayer().getBukkitEntity();
-
-            ItemDropUtil.givePlayerMobLoot(player, rareDrops, defaultDrops, this);
-            ItemDropUtil.givePlayerCoinsAndDrop(player, getBaseCoinDrop(), this);
-        }
-
-        // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way
-        EntityDeathEvent deathEvent = CraftEventFactory.callEntityDeathEvent(this, damageSource, this.drops, () -> {
-            LivingEntity killer = this.getKillCredit();
-            if (killer != null) {
-                killer.awardKillScore(this, damageSource);
-            }
-        });
-
-        this.drops = new ArrayList<>();
-        return deathEvent;
+        return dropAllDeathLootCustom(level, damageSource, this);
     }
 
     @Override

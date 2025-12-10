@@ -13,7 +13,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class MainEvents implements Listener {
+public class ConnectionEvents implements Listener {
 
     @EventHandler
     public void onPrePlayerJoin(AsyncPlayerPreLoginEvent event) {

@@ -3,12 +3,11 @@ package me.randomkitty.verycoolminecraftmmorpg;
 import me.randomkitty.verycoolminecraftmmorpg.commands.CustomItemCommand;
 import me.randomkitty.verycoolminecraftmmorpg.commands.TestCommand;
 import me.randomkitty.verycoolminecraftmmorpg.config.RpgConfig;
-import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityType;
-import me.randomkitty.verycoolminecraftmmorpg.events.GameEvents;
-import me.randomkitty.verycoolminecraftmmorpg.events.MainEvents;
+import me.randomkitty.verycoolminecraftmmorpg.events.DamageEvents;
+import me.randomkitty.verycoolminecraftmmorpg.events.ConnectionEvents;
+import me.randomkitty.verycoolminecraftmmorpg.events.InteractEvents;
+import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
 import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
-import org.bukkit.Bukkit;
-import org.bukkit.GameEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,10 +26,12 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
         this.saveResource("config.yml", false);
         CONFIG = new RpgConfig(new File(this.getDataFolder(), "config.yml"));
 
-
         PluginManager manager = this.getServer().getPluginManager();
-        manager.registerEvents(new GameEvents(), this);
-        manager.registerEvents(new MainEvents(), this);
+
+        manager.registerEvents(new ConnectionEvents(), this);
+        manager.registerEvents(new DamageEvents(), this);
+        manager.registerEvents(new InteractEvents(), this);
+        manager.registerEvents(new InteractEvents(), this);
 
         this.getCommand("test").setExecutor(new TestCommand());
         this.getCommand("givecustomitem").setExecutor(new CustomItemCommand());
@@ -38,10 +39,12 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
         //CustomEntityType.register();
 
         PlayerData.startAutoSave();
+        PlayerAttributes.startDisplayAttributesTask();
     }
 
     @Override
     public void onDisable() {
+        PlayerAttributes.stopDisplayPlayerAttributesTask();
         PlayerData.stopAutoSave();
         PlayerData.saveAll();
     }
