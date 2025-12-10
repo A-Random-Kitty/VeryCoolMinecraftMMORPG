@@ -3,7 +3,9 @@ package me.randomkitty.verycoolminecraftmmorpg.entities.creatures;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomSheep;
+import me.randomkitty.verycoolminecraftmmorpg.entities.pathfinder.StayCloseToOrginGoal;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
@@ -15,10 +17,10 @@ import org.bukkit.Location;
 
 public class GrassySheep extends CustomSheep {
 
-    private static CustomEntityDefaultDrop muttonDrop = new CustomEntityDefaultDrop(2, 3, CustomItems.MUTTON);
-    private static CustomEntityRareDrop bladeOfGrassDrop = new CustomEntityRareDrop(0.05f, CustomItems.BLADE_OF_GRASS);
+    private static final CustomEntityDefaultDrop muttonDrop = new CustomEntityDefaultDrop(1, 3, CustomItems.MUTTON);
+    private static final CustomEntityRareDrop bladeOfGrassDrop = new CustomEntityRareDrop(0.08f, CustomItems.BLADE_OF_GRASS);
 
-    static  {
+    static {
         defaultDrops.add(muttonDrop);
         rareDrops.add(bladeOfGrassDrop);
     }
@@ -31,17 +33,16 @@ public class GrassySheep extends CustomSheep {
         getAttribute(Attributes.MAX_HEALTH).setBaseValue(25);
         setHealth(25);
 
-
-
         updateDisplayName();
     }
 
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new PanicGoal(this, 1.25));
-        goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1F));
-        goalSelector.addGoal(3, new RandomLookAroundGoal(this));
+        goalSelector.addGoal(1, new StayCloseToOrginGoal(this, this.getOnPos()));
+        goalSelector.addGoal(2, new PanicGoal(this, 1.25));
+        goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1F));
+        goalSelector.addGoal(4, new RandomLookAroundGoal(this));
     }
 
     @Override
