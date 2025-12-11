@@ -1,7 +1,7 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.creatures;
 
-
-
+import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.monster.Zombie;
 import org.bukkit.Location;
 
 public class ZombieCreature  {

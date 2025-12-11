@@ -31,6 +31,10 @@ public interface CustomCreature {
         mob.setCustomName(Component.literal(getBaseName() + ChatColor.RED + " " + StringUtil.formatedDouble(mob.getHealth()) + "/" + StringUtil.formatedDouble(mob.getMaxHealth())));
     }
 
+    default void onPostSpawn() {
+
+    }
+
     default EntityDeathEvent dropAllDeathLootCustom(ServerLevel level, DamageSource damageSource, PathfinderMob mob) {
         if (mob.getLastHurtByPlayer() != null) {
             Player player = (Player) mob.getLastHurtByPlayer().getBukkitEntity();

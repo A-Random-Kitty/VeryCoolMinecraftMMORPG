@@ -66,6 +66,7 @@ public class ItemDropUtil {
 
     public static void givePlayerCoinsAndDrop(Player player, double coins, Entity e) {
         PlayerCurrency.addCoins(player.getUniqueId(), coins);
+        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 3f, 1f);
         PlayerScoreboard.updateCoins(player);
 
         ItemStack item = new ItemStack(Material.SUNFLOWER);
@@ -78,7 +79,7 @@ public class ItemDropUtil {
 
     public static void givePlayerCoinsAndDrop(Player player, double coins, Location dropLocation) {
         PlayerCurrency.addCoins(player.getUniqueId(), coins);
-        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1f, 4f);
+        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 3f, 1f);
         PlayerScoreboard.updateCoins(player);
 
         ItemStack item = new ItemStack(Material.SUNFLOWER);
@@ -92,7 +93,7 @@ public class ItemDropUtil {
 
     public static void givePlayerCombatXpAndDrop(Player player, double xp, Entity e) {
         CombatSkill.addPlayerCombatXp(player.getUniqueId(), xp);
-        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2f, 1f);
         ItemStack item = new ItemStack(Material.PRISMARINE_CRYSTALS);
 
         FakeItemEntity entity = new FakeItemEntity(e.level(), e.getX(), e.getY(), e.getZ(), CraftItemStack.asNMSCopy(item));
@@ -103,7 +104,7 @@ public class ItemDropUtil {
 
     public static void givePlayerCombatXpAndDrop(Player player, double xp, Location dropLocation) {
         CombatSkill.addPlayerCombatXp(player.getUniqueId(), xp);
-        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2f, 1f);
 
         ItemStack item = new ItemStack(Material.PRISMARINE_CRYSTALS);
         ServerLevel level = ((CraftWorld)dropLocation.getWorld()).getHandle();

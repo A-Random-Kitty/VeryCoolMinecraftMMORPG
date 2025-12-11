@@ -43,6 +43,10 @@ public class CustomItems {
         return null;
     }
 
+    public static @Nullable CustomItem getCustomItem(ItemStack itemStack) {
+        return get(itemStack.getPersistentDataContainer().get(CUSTOM_ITEM_KEY, PersistentDataType.STRING));
+    }
+
     static {
         // Init items and stuff or something
         MUTTON = register(new CustomItem(new CustomItemBuilder("mutton").setType(ItemType.MATERIAL).setRarity(Rarity.COMMON).setMaterial(Material.MUTTON).setName("Mutton")));

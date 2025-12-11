@@ -47,6 +47,7 @@ public abstract class CustomPathfinderMob extends PathfinderMob implements Custo
     public void spawn(Location location) {
         this.setPos(location.getX(), location.getY(), location.getZ());
         this.level().addFreshEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        onPostSpawn();
     }
 
 
@@ -86,6 +87,7 @@ public abstract class CustomPathfinderMob extends PathfinderMob implements Custo
     @Override
     public void heal(float amount, EntityRegainHealthEvent.RegainReason regainReason, boolean isFastRegen) {
         super.heal(amount, regainReason, isFastRegen);
+        updateDisplayName();
     }
 
     @Override

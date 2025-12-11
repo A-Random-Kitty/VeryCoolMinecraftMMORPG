@@ -2,6 +2,7 @@ package me.randomkitty.verycoolminecraftmmorpg.player.data;
 
 import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import me.randomkitty.verycoolminecraftmmorpg.player.PlayerCurrency;
+import me.randomkitty.verycoolminecraftmmorpg.skills.combat.CombatSkill;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -89,6 +90,7 @@ public class PlayerData {
         {
             // Add Data Values
             dataValues.add(new PlayerCurrency(player));
+            dataValues.add(new CombatSkill(player));
         }
 
         for (PlayerDataValue value : dataValues) {

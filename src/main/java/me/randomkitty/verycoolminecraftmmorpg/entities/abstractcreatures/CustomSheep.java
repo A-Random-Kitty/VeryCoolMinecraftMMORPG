@@ -54,6 +54,7 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
     public void spawn(Location location) {
         this.setPos(location.getX(), location.getY(), location.getZ());
         this.level().addFreshEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        onPostSpawn();
     }
 
     public void updateDisplayName() {
@@ -78,6 +79,7 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
     @Override
     public void heal(float amount, EntityRegainHealthEvent.RegainReason regainReason, boolean isFastRegen) {
         super.heal(amount, regainReason, isFastRegen);
+        updateDisplayName();
     }
 
     @Override

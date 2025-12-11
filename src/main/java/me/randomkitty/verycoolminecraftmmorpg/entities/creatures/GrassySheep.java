@@ -25,6 +25,8 @@ public class GrassySheep extends CustomSheep {
         rareDrops.add(bladeOfGrassDrop);
     }
 
+    private StayCloseToOrginGoal stayCloseToOrginGoal;
+
     public GrassySheep(Location location) {
         super(location);
 
@@ -37,9 +39,15 @@ public class GrassySheep extends CustomSheep {
     }
 
     @Override
+    public void onPostSpawn() {
+        this.stayCloseToOrginGoal.origin = this.getOnPos();
+    }
+
+    @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new StayCloseToOrginGoal(this, this.getOnPos()));
+        this.stayCloseToOrginGoal = new StayCloseToOrginGoal(this, 15);
+        goalSelector.addGoal(1, stayCloseToOrginGoal);
         goalSelector.addGoal(2, new PanicGoal(this, 1.25));
         goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1F));
         goalSelector.addGoal(4, new RandomLookAroundGoal(this));

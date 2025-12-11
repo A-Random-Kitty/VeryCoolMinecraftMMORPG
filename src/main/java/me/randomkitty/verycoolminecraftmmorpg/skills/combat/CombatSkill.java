@@ -1,6 +1,7 @@
 package me.randomkitty.verycoolminecraftmmorpg.skills.combat;
 
 import me.randomkitty.verycoolminecraftmmorpg.skills.Skill;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -13,6 +14,10 @@ public class CombatSkill extends Skill {
 
     public static double getPlayerCombatXp(UUID uuid) { return playerCombatMap.get(uuid).getXp(); }
     public static void addPlayerCombatXp(UUID uuid, double amount) { playerCombatMap.get(uuid).addXp(amount); }
+
+    public CombatSkill(Player player) {
+        playerCombatMap.put(player.getUniqueId(), this);
+    }
 
     @Override
     public String getKey() {

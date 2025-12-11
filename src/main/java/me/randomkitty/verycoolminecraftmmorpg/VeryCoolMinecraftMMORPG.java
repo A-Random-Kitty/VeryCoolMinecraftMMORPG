@@ -6,6 +6,7 @@ import me.randomkitty.verycoolminecraftmmorpg.config.RpgConfig;
 import me.randomkitty.verycoolminecraftmmorpg.events.DamageEvents;
 import me.randomkitty.verycoolminecraftmmorpg.events.ConnectionEvents;
 import me.randomkitty.verycoolminecraftmmorpg.events.InteractEvents;
+import me.randomkitty.verycoolminecraftmmorpg.events.InventoryEvents;
 import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
 import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
 import org.bukkit.plugin.PluginManager;
@@ -31,7 +32,7 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
         manager.registerEvents(new ConnectionEvents(), this);
         manager.registerEvents(new DamageEvents(), this);
         manager.registerEvents(new InteractEvents(), this);
-        manager.registerEvents(new InteractEvents(), this);
+        manager.registerEvents(new InventoryEvents(), this);
 
         this.getCommand("test").setExecutor(new TestCommand());
         this.getCommand("givecustomitem").setExecutor(new CustomItemCommand());
