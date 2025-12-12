@@ -26,7 +26,6 @@ public class ConnectionEvents implements Listener {
         PlayerData.initPlayer(player);
         PlayerAttributes.initPlayer(player);
 
-
         event.joinMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text(" joined the game").color(NamedTextColor.GREEN)));
     }
 

@@ -4,8 +4,11 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import io.papermc.paper.event.entity.EntityDyeEvent;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomCreature;
+import me.randomkitty.verycoolminecraftmmorpg.entities.visual.DisappearingTextDisplay;
 import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
+import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.minecraft.world.entity.item.ItemEntity;
+import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,21 +28,26 @@ public class DamageEvents implements Listener {
 
                 if (entityEvent.getDamager() instanceof Player) {
                     event.setCancelled(true);
+                    return;
+                } else if (((CraftEntity) event.getEntity()).getHandle() instanceof CustomCreature) {
+                    onCustomEntityDamagePlayer(entityEvent, player);;
+                } else {
+                    onPlayerDamageFromNonCustomEntity(entityEvent, player);
                 }
-
-
+            } else {
+                onPlayerDamageNoEntity(event, player);
             }
 
             PlayerAttributes.getAttributes(player).updateActionbar();
         } else {
             net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) event.getEntity()).getHandle();
 
-            if (nmsEntity instanceof CustomCreature) {
+            if (nmsEntity instanceof CustomCreature creature) {
 
                 if (event instanceof EntityDamageByEntityEvent entityEvent) {
 
                     if (entityEvent.getDamager() instanceof Player player) {
-                        event.setDamage(PlayerAttributes.getAttributes(player).totalDamage);
+                        onPlayerDamageCustomEntity(entityEvent, player, creature);
                     }
 
                 }
@@ -54,11 +62,38 @@ public class DamageEvents implements Listener {
                     event.setCancelled(true);
                 }
             }
-
-
-
-
         }
+    }
+
+    private void onPlayerDamageCustomEntity(EntityDamageByEntityEvent event, Player player, CustomCreature creature) {
+        PlayerAttributes attributes = PlayerAttributes.getAttributes(player);
+
+        if (attributes.isCrit()) {
+            event.setDamage(attributes.totalCriticalDamage);
+            DisappearingTextDisplay.spawn(event.getEntity().getLocation(), ChatColor.RED + StringUtil.formatedDouble(attributes.totalCriticalDamage) + "⚔", 35);
+        } else {
+            DisappearingTextDisplay.spawn(event.getEntity().getLocation(), ChatColor.GRAY + StringUtil.formatedDouble(attributes.totalDamage) + "\uD83D\uDDE1", 35);
+            event.setDamage(attributes.totalDamage);
+        }
+
+    }
+
+    private  void onCustomEntityDamagePlayer(EntityDamageByEntityEvent event, Player player) {
+        PlayerAttributes attributes = PlayerAttributes.getAttributes(player);
+
+        event.setDamage(attributes.getDamageAfterDefence(event.getDamage()));
+    }
+
+    private void onPlayerDamageFromNonCustomEntity(EntityDamageByEntityEvent event, Player player) {
+        PlayerAttributes attributes = PlayerAttributes.getAttributes(player);
+
+        event.setDamage(attributes.getDamageAfterDefence(event.getDamage()));
+    }
+
+    private void onPlayerDamageNoEntity(EntityDamageEvent event, Player player) {
+        PlayerAttributes attributes = PlayerAttributes.getAttributes(player);
+
+        event.setDamage(attributes.getDamageAfterDefence(event.getDamage()));
     }
 
     @EventHandler

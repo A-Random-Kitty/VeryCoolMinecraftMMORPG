@@ -7,15 +7,19 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Shop implements CustomInventory {
 
+    private final List<ShopEntry> entries = new ArrayList<>();
+
     private ItemStack[] contents;
-
-
 
     @Override
     public @NotNull Inventory getInventory() {
         Inventory inventory = Bukkit.createInventory(this, 9 * 6);
+        inventory.setContents(contents);
 
         return inventory;
     }
@@ -37,11 +41,12 @@ public class Shop implements CustomInventory {
 
     @Override
     public void handleDrag(InventoryDragEvent event) {
-
     }
 
     @Override
     public void handleMoveItem(InventoryMoveItemEvent event) {
-
+        if (event.getSource().getHolder() == this || event.getDestination().getHolder() == this) {
+            event.setCancelled(true);
+        }
     }
 }

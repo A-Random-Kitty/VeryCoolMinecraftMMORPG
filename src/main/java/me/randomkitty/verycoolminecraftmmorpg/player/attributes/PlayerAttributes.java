@@ -15,19 +15,20 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class PlayerAttributes {
 
-    private static Map<Player, PlayerAttributes> playerAttributes = new HashMap<>();
+    private static final Random random = new Random();
+
+    private static final Map<Player, PlayerAttributes> playerAttributes = new HashMap<>();
 
     public static void initPlayer(Player player) {
         playerAttributes.put(player, new PlayerAttributes(player));
     }
-
     public static void removePlayer(Player player) {
         playerAttributes.remove(player);
     }
-
     public static PlayerAttributes getAttributes(Player player) { return playerAttributes.get(player); }
 
     private static BukkitTask displayAttributesTask;
@@ -87,23 +88,35 @@ public class PlayerAttributes {
         this.player = player;
     }
 
-    private double getDisplayMaxHealth() {
-        return Math.min(maxDisplayHealth, Math.max(minDisplayHealth, health / 50));
+    public boolean isCrit() {
+        return random.nextFloat() <= critChance;
+    }
+
+    public double getDamageAfterDefence(double damageAmount) {
+        return damageAmount / (1 + (defense / 50));
     }
 
     public void calculateAttributes(ItemStack mainHandItemStack, ItemStack[] armorContents) {
         defense = 0; // 🛡
-        health = 100; // ❤
-        intelligence = 100;  // ☄
-        damage = 5;
-        critChance = 15;
-        critDamage = 30;
+        health = 50; // ❤
+        intelligence = 50;  // ☄
+        damage = 5; // 🗡
+        critChance = 15; // ☠
+        critDamage = 30; // ⚔
 
         if (mainHandItemStack != null) {
             CustomItemInstance mainHand = CustomItems.fromItemStack(mainHandItemStack);
 
             if (mainHand != null && mainHand.baseItem.getSlot() == EquipmentSlot.HAND)
                 addAttributes(mainHand);
+        }
+
+        for (ItemStack armorItem : armorContents) {
+            CustomItemInstance customArmorItem  = CustomItems.fromItemStack(armorItem);
+
+            if (customArmorItem != null) {
+                addAttributes(customArmorItem);
+            }
         }
 
         {
@@ -124,6 +137,10 @@ public class PlayerAttributes {
         damage += item.baseItem.getDamage();
         critChance = item.baseItem.getCriticalChance();
         critDamage = item.baseItem.getCriticalDamage();
+    }
+
+    private double getDisplayMaxHealth() {
+        return Math.min(maxDisplayHealth, Math.max(minDisplayHealth, health / 50));
     }
 
     public void updateActionbar() {
