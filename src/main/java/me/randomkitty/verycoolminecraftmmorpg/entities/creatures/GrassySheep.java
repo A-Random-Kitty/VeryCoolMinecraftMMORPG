@@ -46,9 +46,9 @@ public class GrassySheep extends CustomSheep {
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
+        goalSelector.addGoal(1, new PanicGoal(this, 1.25));
         this.stayCloseToOrginGoal = new StayCloseToOrginGoal(this, 15);
-        goalSelector.addGoal(1, stayCloseToOrginGoal);
-        goalSelector.addGoal(2, new PanicGoal(this, 1.25));
+        goalSelector.addGoal(2, stayCloseToOrginGoal);
         goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1F));
         goalSelector.addGoal(4, new RandomLookAroundGoal(this));
     }

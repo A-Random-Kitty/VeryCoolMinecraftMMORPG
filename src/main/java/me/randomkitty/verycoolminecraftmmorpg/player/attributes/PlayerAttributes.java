@@ -89,7 +89,8 @@ public class PlayerAttributes {
     }
 
     public boolean isCrit() {
-        return random.nextFloat() <= critChance;
+        Bukkit.getLogger().info(String.valueOf(critChance));
+        return (random.nextDouble() <= (critChance / 100));
     }
 
     public double getDamageAfterDefence(double damageAmount) {
@@ -100,7 +101,7 @@ public class PlayerAttributes {
         defense = 0; // 🛡
         health = 50; // ❤
         intelligence = 50;  // ☄
-        damage = 5; // 🗡
+        damage = 0; // 🗡
         critChance = 15; // ☠
         critDamage = 30; // ⚔
 
@@ -112,15 +113,20 @@ public class PlayerAttributes {
         }
 
         for (ItemStack armorItem : armorContents) {
-            CustomItemInstance customArmorItem  = CustomItems.fromItemStack(armorItem);
+            if (armorItem != null) {
+                CustomItemInstance customArmorItem  = CustomItems.fromItemStack(armorItem);
 
-            if (customArmorItem != null) {
-                addAttributes(customArmorItem);
+                if (customArmorItem != null) {
+                    addAttributes(customArmorItem);
+                }
             }
         }
 
         {
-            // Calculate total damage
+            if (damage < 5) {
+                damage = 5;
+            }
+
             totalDamage = damage;
             totalCriticalDamage = damage * (1 + (critDamage / 100));
         }
@@ -135,8 +141,8 @@ public class PlayerAttributes {
         health += item.baseItem.getHealth();
         intelligence += item.baseItem.getIntelligence();
         damage += item.baseItem.getDamage();
-        critChance = item.baseItem.getCriticalChance();
-        critDamage = item.baseItem.getCriticalDamage();
+        critChance += item.baseItem.getCriticalChance();
+        critDamage += item.baseItem.getCriticalDamage();
     }
 
     private double getDisplayMaxHealth() {

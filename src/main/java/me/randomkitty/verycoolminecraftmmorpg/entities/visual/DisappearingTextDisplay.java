@@ -24,8 +24,9 @@ public class DisappearingTextDisplay extends Display.TextDisplay {
     public static DisappearingTextDisplay spawn(Location location, String text, int lifetime) {
         ServerLevel level = ((CraftWorld) location.getWorld()).getHandle();
         DisappearingTextDisplay display = new DisappearingTextDisplay(level, lifetime);
-        display.setPos(location.getX(), location.getY(), location.getZ());
+        display.setPos(location.getX(), location.getY() + 1, location.getZ());
         display.setText(Component.literal(text));
+        display.setBillboardConstraints(BillboardConstraints.CENTER);
         level.addFreshEntity(display);
         return display;
     }

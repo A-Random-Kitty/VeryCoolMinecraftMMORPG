@@ -34,13 +34,11 @@ public class StayCloseToOrginGoal extends Goal {
 
     @Override
     public void start() {
-        Bukkit.getLogger().info("testing move to origin start" + origin.getX() + ", " +  origin.getY() + ", " + origin.getZ());
         this.mob.getNavigation().moveTo(origin.getX(), origin.getY(), origin.getZ(), 1);
     }
 
     @Override
     public void stop() {
-        Bukkit.getLogger().info("testing move to origin stop" + origin.getX() + ", " +  origin.getY() + ", " + origin.getZ());
         this.mob.getNavigation().stop();
     }
 

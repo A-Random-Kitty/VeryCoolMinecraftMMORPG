@@ -70,10 +70,10 @@ public class DamageEvents implements Listener {
 
         if (attributes.isCrit()) {
             event.setDamage(attributes.totalCriticalDamage);
-            DisappearingTextDisplay.spawn(event.getEntity().getLocation(), ChatColor.RED + StringUtil.formatedDouble(attributes.totalCriticalDamage) + "⚔", 35);
+            DisappearingTextDisplay.spawn(event.getEntity().getLocation(), ChatColor.RED + StringUtil.noDecimalDouble(attributes.totalCriticalDamage) + "⚔", 35);
         } else {
-            DisappearingTextDisplay.spawn(event.getEntity().getLocation(), ChatColor.GRAY + StringUtil.formatedDouble(attributes.totalDamage) + "\uD83D\uDDE1", 35);
             event.setDamage(attributes.totalDamage);
+            DisappearingTextDisplay.spawn(event.getEntity().getLocation(), ChatColor.GRAY + StringUtil.noDecimalDouble(attributes.totalDamage) + "\uD83D\uDDE1", 35);
         }
 
     }
