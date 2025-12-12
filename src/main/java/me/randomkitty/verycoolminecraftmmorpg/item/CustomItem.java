@@ -4,6 +4,7 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.FoodProperties;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -66,7 +67,7 @@ public class CustomItem {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(Component.text(name, rarity.getColor()).decoration(TextDecoration.ITALIC, false));
+        meta.displayName(this.getColoredName());
 
         {
             // The lore (those who lore)
@@ -111,6 +112,12 @@ public class CustomItem {
 
         return item;
     }
+
+    public TextComponent getColoredName() {
+        return Component.text(name, rarity.getColor()).decoration(TextDecoration.ITALIC, false);
+    }
+
+
 
     public String getKey() { return key; }
 
