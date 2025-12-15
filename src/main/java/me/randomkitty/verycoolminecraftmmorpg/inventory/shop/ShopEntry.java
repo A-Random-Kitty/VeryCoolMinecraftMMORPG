@@ -68,6 +68,10 @@ public class ShopEntry implements ConfigurationSerializable {
         return guiItem;
     }
 
+    public void setItemsCost(Map<CustomItem, Integer> cost) {
+        this.itemsCost = cost;
+    }
+
     @Override
     public @NotNull Map<String, Object> serialize() {
         Map<String, Object> serializedData = new HashMap<>();

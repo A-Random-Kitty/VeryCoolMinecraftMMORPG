@@ -1,13 +1,11 @@
 package me.randomkitty.verycoolminecraftmmorpg.inventory.shop;
 
-import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import me.randomkitty.verycoolminecraftmmorpg.inventory.CustomInventory;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -15,16 +13,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Shop implements CustomInventory, ConfigurationSerializable {
-
-    private final static File shopsFolder = new File(VeryCoolMinecraftMMORPG.INSTANCE.getDataFolder(), "shops");
-
-    private final static Map<String, Shop> shops = new HashMap<>();
+public class Shop implements CustomInventory {
 
     private static final ItemStack blankItem;
 
@@ -44,14 +39,44 @@ public class Shop implements CustomInventory, ConfigurationSerializable {
         blankItem.setItemMeta(m);
     }
 
+    public static Shop deserialize(YamlConfiguration configuration) {
+        String name = configuration.getName();
 
-    public final List<ShopEntry> entries;
+        ConfigurationSection entriesSection = configuration.getConfigurationSection("entries");
 
-    private final ItemStack[] contents = new ItemStack[9 * 6];
+        if (entriesSection != null) {
+            List<ShopEntry> entries = new ArrayList<>();
+            for (String s : entriesSection.getKeys(false)) {
+                entries.add(entriesSection.getSerializable(s, ShopEntry.class));
+            }
+
+            return new Shop(name, entries);
+        } else {
+            return new Shop(name, new ArrayList<>());
+        }
+    }
+
+    public static Shop fromFile(File file) {
+        if (file.exists()) {
+            return deserialize(YamlConfiguration.loadConfiguration(file));
+        } else {
+            return null;
+        }
+    }
+
+
+    public List<ShopEntry> entries;
+    public String name;
+
+    private ItemStack[] contents = new ItemStack[9 * 6];
 
     public Shop(String name, List<ShopEntry> shopEntries) {
         this.entries = shopEntries;
+        this.name = name;
+        generateContents();
+    }
 
+    public void generateContents() {
         int i = 0;
 
         for (ShopEntry entry : entries) {
@@ -73,7 +98,7 @@ public class Shop implements CustomInventory, ConfigurationSerializable {
 
     @Override
     public @NotNull Inventory getInventory() {
-        Inventory inventory = Bukkit.createInventory(this, 9 * 6);
+        Inventory inventory = Bukkit.createInventory(this, 9 * 6, name);
         inventory.setContents(contents);
 
         return inventory;
@@ -105,35 +130,21 @@ public class Shop implements CustomInventory, ConfigurationSerializable {
         }
     }
 
-    @Override
-    public @NotNull Map<String, Object> serialize() {
-        Map<String, Object> serializedData = new HashMap<>();
+    public void saveToFile(File file) {
+        YamlConfiguration configuration = new YamlConfiguration();
+
+        configuration.set("name", name);
 
         for (ShopEntry entry : entries) {
-            serializedData.put("entries." + entry.key, entry.serialize());
+            configuration.set("entries." + entry.key, entry.serialize());
         }
 
-        return serializedData;
-    }
-
-    public static Shop deserialize(ConfigurationSection configuration) {
-        String name = configuration.getName();
-
-        ConfigurationSection entriesSection = configuration.getConfigurationSection("entries");
-
-        if (entriesSection != null) {
-            List<ShopEntry> entries = new ArrayList<>();
-            for (String s : entriesSection.getKeys(false)) {
-
-            }
-        } else {
-            return new Shop(new ArrayList<>());
+        try {
+            configuration.save(file);
+        } catch (IOException e) {
+            Bukkit.getLogger().severe("Failed to save shop");
+            e.printStackTrace();
         }
-
-
-    }
-
-    public static Shop fromFile(File file) {
 
     }
 }

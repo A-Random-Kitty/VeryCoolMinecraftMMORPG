@@ -1,12 +1,14 @@
 package me.randomkitty.verycoolminecraftmmorpg;
 
 import me.randomkitty.verycoolminecraftmmorpg.commands.CustomItemCommand;
+import me.randomkitty.verycoolminecraftmmorpg.commands.ShopCommand;
 import me.randomkitty.verycoolminecraftmmorpg.commands.TestCommand;
 import me.randomkitty.verycoolminecraftmmorpg.config.RpgConfig;
 import me.randomkitty.verycoolminecraftmmorpg.events.DamageEvents;
 import me.randomkitty.verycoolminecraftmmorpg.events.ConnectionEvents;
 import me.randomkitty.verycoolminecraftmmorpg.events.InteractEvents;
 import me.randomkitty.verycoolminecraftmmorpg.events.InventoryEvents;
+import me.randomkitty.verycoolminecraftmmorpg.inventory.shop.Shops;
 import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
 import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
 import org.bukkit.plugin.PluginManager;
@@ -34,11 +36,13 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
         manager.registerEvents(new InteractEvents(), this);
         manager.registerEvents(new InventoryEvents(), this);
 
+        this.getCommand("shop").setExecutor(new ShopCommand());
         this.getCommand("test").setExecutor(new TestCommand());
         this.getCommand("givecustomitem").setExecutor(new CustomItemCommand());
 
         //CustomEntityType.register();
 
+        Shops.loadAllShops();
         PlayerData.startAutoSave();
         PlayerAttributes.startDisplayAttributesTask();
     }

@@ -4,5 +4,6 @@ main: me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG
 api-version: '1.21'
 
 commands:
+  shop:
   test:
   givecustomitem:
