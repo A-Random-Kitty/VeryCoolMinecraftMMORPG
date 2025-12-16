@@ -2,6 +2,7 @@ package me.randomkitty.verycoolminecraftmmorpg.inventory.shop;
 
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItem;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
+import me.randomkitty.verycoolminecraftmmorpg.player.PlayerCurrency;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -28,11 +29,8 @@ public class ShopEntry implements ConfigurationSerializable {
     private Map<CustomItem, Integer> itemsCost;
     private double coinsCost;
 
-    public boolean buy(Player player) {
-        return false;
-    }
-
     public ShopEntry(CustomItem item, int amount, Map<CustomItem, Integer> itemsCost, double coinsCost, String key) {
+        this.key = key;
         this.item = item;
         this.amount = amount;
         this.itemsCost = itemsCost;
@@ -69,6 +67,18 @@ public class ShopEntry implements ConfigurationSerializable {
 
         guiItem.setItemMeta(meta);
         return guiItem;
+    }
+
+    public void attemptPurchase(Player player) {
+        PlayerCurrency currency = PlayerCurrency.getCurrency(player.getUniqueId());
+
+        if (coinsCost > currency.getCoins()) {
+            player.sendMessage(Component.text("You are too broke to buy this!").color(NamedTextColor.RED));
+            return;
+        }
+
+
+
     }
 
     public void setItemsCost(Map<CustomItem, Integer> cost) {

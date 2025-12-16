@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -42,6 +43,8 @@ public class Shop implements CustomInventory {
     public List<ShopEntry> entries;
     public String name;
 
+    private Map<Integer, ShopEntry> entrySlots = new HashMap<>();
+
     private ItemStack[] contents = new ItemStack[9 * 6];
 
     public Shop(String name, List<ShopEntry> shopEntries) {
@@ -51,6 +54,7 @@ public class Shop implements CustomInventory {
     }
 
     public void generateContents() {
+        entrySlots.clear();
         int i = 0;
 
         for (ShopEntry entry : entries) {
@@ -63,6 +67,7 @@ public class Shop implements CustomInventory {
             }
 
             if (i < contents.length) {
+                entrySlots.put(i, entry);
                 contents[i] = entry.getGuiItem();
             } else {
                 break;
@@ -88,6 +93,19 @@ public class Shop implements CustomInventory {
 
     @Override
     public void handleClick(InventoryClickEvent event) {
+        Inventory inv = event.getClickedInventory();
+
+        if (inv != null && inv.getHolder() == this) {
+            event.setCancelled(true);
+
+            ShopEntry entry = entrySlots.get(event.getSlot());
+
+            if (entry != null) {
+                entry.attemptPurchase((Player) event.getWhoClicked());
+            }
+
+
+        }
 
     }
 
@@ -103,6 +121,7 @@ public class Shop implements CustomInventory {
 
     @Override
     public void handleDrag(InventoryDragEvent event) {
+
     }
 
     @Override

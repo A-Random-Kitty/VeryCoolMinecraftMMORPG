@@ -12,6 +12,8 @@ public class PlayerCurrency extends PlayerDataValue {
 
     private final static Map<UUID, PlayerCurrency> playerCurrencyMap = new HashMap<>();
 
+    public static PlayerCurrency getCurrency(UUID uuid) { return playerCurrencyMap.get(uuid); }
+
     public static double getCoins(UUID uuid) { return playerCurrencyMap.get(uuid).coins; }
     public static void addCoins(UUID uuid, double coins) { playerCurrencyMap.get(uuid).coins += coins; }
     public static boolean spendCoins (UUID uuid, double amount) {
@@ -30,6 +32,17 @@ public class PlayerCurrency extends PlayerDataValue {
     public PlayerCurrency(Player player) {
         super();
         playerCurrencyMap.put(player.getUniqueId(), this);
+    }
+
+    public double getCoins() { return this.coins; }
+    public void addCoins(double amount) { this.coins += amount; }
+    public boolean spendCoins (double amount) {
+        if (amount <= coins) {
+            coins -= amount;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
