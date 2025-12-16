@@ -39,32 +39,6 @@ public class Shop implements CustomInventory {
         blankItem.setItemMeta(m);
     }
 
-    public static Shop deserialize(YamlConfiguration configuration) {
-        String name = configuration.getName();
-
-        ConfigurationSection entriesSection = configuration.getConfigurationSection("entries");
-
-        if (entriesSection != null) {
-            List<ShopEntry> entries = new ArrayList<>();
-            for (String s : entriesSection.getKeys(false)) {
-                entries.add(entriesSection.getSerializable(s, ShopEntry.class));
-            }
-
-            return new Shop(name, entries);
-        } else {
-            return new Shop(name, new ArrayList<>());
-        }
-    }
-
-    public static Shop fromFile(File file) {
-        if (file.exists()) {
-            return deserialize(YamlConfiguration.loadConfiguration(file));
-        } else {
-            return null;
-        }
-    }
-
-
     public List<ShopEntry> entries;
     public String name;
 
@@ -93,6 +67,14 @@ public class Shop implements CustomInventory {
             } else {
                 break;
             }
+        }
+
+        while (i < layout.length) {
+            if (layout[i] == '_') {
+                contents[i] = blankItem.clone();
+            }
+
+            i++;
         }
     }
 
@@ -146,5 +128,30 @@ public class Shop implements CustomInventory {
             e.printStackTrace();
         }
 
+    }
+
+    public static Shop deserialize(YamlConfiguration configuration) {
+        String name = configuration.getName();
+
+        ConfigurationSection entriesSection = configuration.getConfigurationSection("entries");
+
+        if (entriesSection != null) {
+            List<ShopEntry> entries = new ArrayList<>();
+            for (String s : entriesSection.getKeys(false)) {
+                entries.add(ShopEntry.deserialize(entriesSection.getConfigurationSection(s)));
+            }
+
+            return new Shop(name, entries);
+        } else {
+            return new Shop(name, new ArrayList<>());
+        }
+    }
+
+    public static Shop fromFile(File file) {
+        if (file.exists()) {
+            return deserialize(YamlConfiguration.loadConfiguration(file));
+        } else {
+            return null;
+        }
     }
 }

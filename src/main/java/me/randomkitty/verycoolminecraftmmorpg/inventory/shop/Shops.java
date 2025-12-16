@@ -37,9 +37,8 @@ public class Shops {
             File[] files = shopsFolder.listFiles();
             if (files != null) {
                 for (File file : files) {
-                    if (FilenameUtils.getExtension(file.getName()).equals(".yml")) {
+                    if (FilenameUtils.getExtension(file.getName()).equals("yml")) {
                         Shop shop = Shop.fromFile(file);
-
                         if (shop != null) {
                             shops.put(FilenameUtils.removeExtension(file.getName()), shop);
                         } else {

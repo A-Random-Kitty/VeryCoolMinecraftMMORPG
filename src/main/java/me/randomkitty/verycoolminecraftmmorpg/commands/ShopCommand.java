@@ -11,10 +11,8 @@ public class ShopCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 
-        if (args.length < 1 && !(sender instanceof Player))
+        if (args.length < 1 || !(sender instanceof Player player))
             return true;
-
-        Player player = (Player) sender;
 
         switch (args[0]) {
             case "open":

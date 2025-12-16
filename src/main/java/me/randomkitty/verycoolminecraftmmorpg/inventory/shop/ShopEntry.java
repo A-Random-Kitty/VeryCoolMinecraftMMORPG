@@ -5,6 +5,7 @@ import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
@@ -48,21 +49,23 @@ public class ShopEntry implements ConfigurationSerializable {
         }
 
         lore.add(Component.empty());
-        lore.add(Component.text("Cost: ").color(NamedTextColor.WHITE));
+        lore.add(Component.text("Cost: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 
-        if (coinsCost != 0) {
-            lore.add(Component.text(String.format("%,1.0f", coinsCost) + " Coins").color(NamedTextColor.GOLD));
+        if (coinsCost > 0) {
+            lore.add(Component.text(String.format("  %,1.0f", coinsCost) + " Coins").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         }
 
         for (Map.Entry<CustomItem, Integer> entry : itemsCost.entrySet()) {
-            TextComponent component = entry.getKey().getColoredName();
+            TextComponent component = Component.text("  ").append(entry.getKey().getColoredName());
 
-            if (entry.getValue() > 1) {
-                component.append(Component.text("x" + entry.getValue()).color(NamedTextColor.GRAY));
+            if (entry.getValue() >= 1) {
+                component.append(Component.text("x" + entry.getValue()).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
             }
 
             lore.add(component);
         }
+
+        meta.lore(lore);
 
         guiItem.setItemMeta(meta);
         return guiItem;

@@ -89,7 +89,6 @@ public class PlayerAttributes {
     }
 
     public boolean isCrit() {
-        Bukkit.getLogger().info(String.valueOf(critChance));
         return (random.nextDouble() <= (critChance / 100));
     }
 
