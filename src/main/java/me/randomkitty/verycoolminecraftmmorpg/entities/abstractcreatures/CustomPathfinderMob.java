@@ -11,6 +11,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.bukkit.Bukkit;
@@ -88,6 +89,7 @@ public abstract class CustomPathfinderMob extends PathfinderMob implements Custo
     public void heal(float amount, EntityRegainHealthEvent.RegainReason regainReason, boolean isFastRegen) {
         super.heal(amount, regainReason, isFastRegen);
         updateDisplayName();
+
     }
 
     @Override

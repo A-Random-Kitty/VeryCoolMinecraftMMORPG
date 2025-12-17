@@ -1,15 +1,22 @@
 package me.randomkitty.verycoolminecraftmmorpg.events;
 
 import io.papermc.paper.event.entity.EntityDyeEvent;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.SwellGoal;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
+import org.bukkit.craftbukkit.entity.CraftCreeper;
+import org.bukkit.entity.Creeper;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class InteractEvents implements Listener {
 
@@ -67,6 +74,7 @@ public class InteractEvents implements Listener {
 
         if (block != null && cancelInteractBlocks.contains(block.getType().asBlockType())) {
             event.setCancelled(true);
+
         }
     }
 

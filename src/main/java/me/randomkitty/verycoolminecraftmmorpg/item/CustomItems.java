@@ -19,6 +19,7 @@ public class CustomItems {
     public static final CustomItem MUTTON;
 
     public static final CustomItem BLADE_OF_GRASS;
+    public static final CustomItem BLADES_OF_GRASS;
     public static final CustomItem SHARP_STICK;
 
     public static final CustomItem SWORD_OF_DIVINE_WRATH;
@@ -52,6 +53,7 @@ public class CustomItems {
         MUTTON = register(new CustomItem(new CustomItemBuilder("mutton").setType(ItemType.MATERIAL).setRarity(Rarity.COMMON).setMaterial(Material.MUTTON).setName("Mutton")));
 
         BLADE_OF_GRASS = register(new CustomItem(new CustomItemBuilder("blade_of_grass").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.UNCOMMON).setMaterial(Material.BAMBOO).setMaxStackSize(1).setDamage(15).setName("Blade of Grass")));
+        BLADES_OF_GRASS = register(new CustomItem(new CustomItemBuilder("blades_of_grass").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.RARE).setMaterial(Material.SUGAR_CANE).setMaxStackSize(1).setDamage(25).setCriticalDamage(50).setCriticalChance(35).setName("Blades of Grass")));
         SHARP_STICK = register(new CustomItem(new CustomItemBuilder("sharp_stick").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.COMMON).setMaterial(Material.STICK).setMaxStackSize(1).setDamage(10).setName("Sharp Stick")));
 
         SWORD_OF_DIVINE_WRATH = register(new CustomItem(new CustomItemBuilder("sword_of_divine_wrath").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.MYTHICAL).setMaterial(Material.NETHERITE_SWORD).setMaxStackSize(1).setDamage(99999).setName("Sword of Divine Wrath")));

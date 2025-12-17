@@ -2,6 +2,8 @@ package me.randomkitty.verycoolminecraftmmorpg.commands;
 
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomSheep;
 import me.randomkitty.verycoolminecraftmmorpg.entities.creatures.GrassySheep;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

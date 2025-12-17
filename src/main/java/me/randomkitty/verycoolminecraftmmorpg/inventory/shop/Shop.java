@@ -94,9 +94,11 @@ public class Shop implements CustomInventory {
     @Override
     public void handleClick(InventoryClickEvent event) {
         Inventory inv = event.getClickedInventory();
+        Bukkit.getLogger().info("Custom Inventory Click Handled");
 
         if (inv != null && inv.getHolder() == this) {
             event.setCancelled(true);
+            Bukkit.getLogger().info("Custom Inventory Click Handled 2");
 
             ShopEntry entry = entrySlots.get(event.getSlot());
 
@@ -150,7 +152,7 @@ public class Shop implements CustomInventory {
     }
 
     public static Shop deserialize(YamlConfiguration configuration) {
-        String name = configuration.getName();
+        String name = configuration.getString("name");
 
         ConfigurationSection entriesSection = configuration.getConfigurationSection("entries");
 

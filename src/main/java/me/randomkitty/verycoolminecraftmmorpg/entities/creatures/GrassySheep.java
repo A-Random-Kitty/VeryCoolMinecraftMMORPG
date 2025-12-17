@@ -6,11 +6,12 @@ import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomS
 import me.randomkitty.verycoolminecraftmmorpg.entities.pathfinder.StayCloseToOrginGoal;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.PanicGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Silverfish;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -31,7 +32,8 @@ public class GrassySheep extends CustomSheep {
         super(location);
 
         setColor(DyeColor.LIME);
-
+        this.getAttributes().registerAttribute(Attributes.ATTACK_DAMAGE);
+        getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(8);
         getAttribute(Attributes.MAX_HEALTH).setBaseValue(25);
         setHealth(25);
 
@@ -48,9 +50,13 @@ public class GrassySheep extends CustomSheep {
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new PanicGoal(this, 1.25));
         this.stayCloseToOrginGoal = new StayCloseToOrginGoal(this, 15);
-        goalSelector.addGoal(2, stayCloseToOrginGoal);
-        goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1F));
-        goalSelector.addGoal(4, new RandomLookAroundGoal(this));
+        super.goalSelector.addGoal(2, new MeleeAttackGoal(this, (double)2.0F, false));
+        goalSelector.addGoal(3, stayCloseToOrginGoal);
+        goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1F));
+        goalSelector.addGoal(5, new RandomLookAroundGoal(this));
+
+
+        targetSelector.addGoal(0, new NearestAttackableTargetGoal(this, Player.class, true));
     }
 
     @Override

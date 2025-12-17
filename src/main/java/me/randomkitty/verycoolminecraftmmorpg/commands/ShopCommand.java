@@ -25,7 +25,7 @@ public class ShopCommand implements CommandExecutor {
                 Shops.loadAllShops();
                 break;
             case "save":
-                Shops.saveAllShops();
+                //Shops.saveAllShops();
                 break;
 
             default:

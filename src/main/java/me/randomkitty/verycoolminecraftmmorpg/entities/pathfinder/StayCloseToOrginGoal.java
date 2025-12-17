@@ -26,9 +26,6 @@ public class StayCloseToOrginGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        //Bukkit.getLogger().info("checked continue moving back to orgin");
-        //Bukkit.getLogger().info( String.valueOf(Math.sqrt(mob.distanceToSqr(origin.getX(), origin.getY(), origin.getZ())) >= 12));
-
         return mob.distanceToSqr(origin.getX(), origin.getY(), origin.getZ()) >= (range * range);
     }
 

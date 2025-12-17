@@ -57,7 +57,7 @@ public class ShopEntry implements ConfigurationSerializable {
             TextComponent component = Component.text("  ").append(entry.getKey().getColoredName());
 
             if (entry.getValue() >= 1) {
-                component.append(Component.text("x" + entry.getValue()).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+                component = component.append(Component.text(" x" + entry.getValue()).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
             }
 
             lore.add(component);
@@ -77,7 +77,42 @@ public class ShopEntry implements ConfigurationSerializable {
             return;
         }
 
+        Map<CustomItem, Integer> availableItems = new HashMap<>();
 
+        for (ItemStack i : player.getInventory()) {
+            CustomItem item = CustomItems.getCustomItem(i);
+
+            if (item != null) {
+                if (availableItems.containsKey(item)) {
+                    availableItems.put(item, availableItems.get(item) + i.getAmount());
+                } else {
+                    availableItems.put(item, i.getAmount());
+                }
+            }
+        }
+
+        boolean canAfford = true;
+
+        for (Map.Entry<CustomItem, Integer> entry : itemsCost.entrySet()) {
+            if (availableItems.containsKey(entry.getKey())) {
+                if (!(availableItems.get(entry.getKey()) >= entry.getValue())) {
+                    canAfford = false;
+                    break;
+                }
+            } else {
+                canAfford = false;
+                break;
+            }
+        }
+
+        if (canAfford) {
+
+
+
+            ItemStack newItem = item.newItemStack();
+            newItem.setAmount(amount);
+            player.give(newItem);
+        }
 
     }
 
