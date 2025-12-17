@@ -1,11 +1,11 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
+import io.papermc.paper.adventure.PaperAdventure;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
 import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
+import net.kyori.adventure.text.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,11 +25,13 @@ public interface CustomCreature {
     List<CustomEntityRareDrop> rareDrops = new ArrayList<>();
 
     double getBaseCoinDrop();
+
     double getBaseXpDrop();
+
     String getBaseName();
 
     default void updateDisplayName(PathfinderMob mob) {
-        mob.setCustomName(Component.literal(getBaseName() + ChatColor.RED + " " + StringUtil.formatedDouble(mob.getHealth()) + "/" + StringUtil.formatedDouble(mob.getMaxHealth())));
+        mob.getBukkitEntity().setCustomName(getBaseName() + ChatColor.RED + " " + StringUtil.formatedDouble(mob.getHealth()) + "/" + StringUtil.formatedDouble(mob.getMaxHealth()));
     }
 
     default void onPostSpawn() {

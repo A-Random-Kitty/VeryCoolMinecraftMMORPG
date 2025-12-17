@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+// might be finished later if I feel like it
 public class ShopEntryEditor implements CustomInventory {
 
     private static final char[] layout = {

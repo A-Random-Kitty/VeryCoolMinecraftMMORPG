@@ -70,6 +70,7 @@ public class ShopEntry implements ConfigurationSerializable {
     }
 
     public void attemptPurchase(Player player) {
+        // this logic is way too complicated and probably can be improved
         PlayerCurrency currency = PlayerCurrency.getCurrency(player.getUniqueId());
 
         if (coinsCost > currency.getCoins()) {
@@ -78,15 +79,18 @@ public class ShopEntry implements ConfigurationSerializable {
         }
 
         Map<CustomItem, Integer> availableItems = new HashMap<>();
+        Map<Integer, CustomItem> slotItemType = new HashMap<>(); // for optimization (probably helps)
 
-        for (ItemStack i : player.getInventory()) {
-            CustomItem item = CustomItems.getCustomItem(i);
+        ItemStack[] contents = player.getInventory().getContents();
+        for (int i = 0; i < contents.length; i++) {
+            CustomItem item = CustomItems.getCustomItem(contents[i]);
 
             if (item != null) {
+                slotItemType.put(i, item);
                 if (availableItems.containsKey(item)) {
-                    availableItems.put(item, availableItems.get(item) + i.getAmount());
+                    availableItems.put(item, availableItems.get(item) + contents[i].getAmount());
                 } else {
-                    availableItems.put(item, i.getAmount());
+                    availableItems.put(item, contents[i].getAmount());
                 }
             }
         }
@@ -106,8 +110,34 @@ public class ShopEntry implements ConfigurationSerializable {
         }
 
         if (canAfford) {
+            for (Map.Entry<CustomItem, Integer> entry : itemsCost.entrySet()) {
+                int remaining = entry.getValue();
 
+                for (int i = 0; i < contents.length; i++) {
 
+                    if (slotItemType.get(i) == entry.getKey()) {
+                        int amount = contents[i].getAmount();
+                        if (amount > remaining) {
+                            remaining -= amount;
+                            contents[i].setAmount(amount - remaining);
+                            break;
+                        } else if (remaining == amount) {
+                            remaining -= amount;
+                            player.getInventory().setItem(i, null);
+                            break;
+                        } else {
+                            remaining -= amount;
+                            player.getInventory().setItem(i, null);
+                        }
+
+                    }
+                }
+
+                if (remaining > 0) {
+                    throw new RuntimeException("Very big scary shop error (should not happen very bad)");
+                }
+
+            }
 
             ItemStack newItem = item.newItemStack();
             newItem.setAmount(amount);

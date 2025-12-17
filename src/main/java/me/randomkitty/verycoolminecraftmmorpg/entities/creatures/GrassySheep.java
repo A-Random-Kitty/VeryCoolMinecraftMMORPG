@@ -5,16 +5,14 @@ import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomSheep;
 import me.randomkitty.verycoolminecraftmmorpg.entities.pathfinder.StayCloseToOrginGoal;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.Silverfish;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 
 public class GrassySheep extends CustomSheep {
 
