@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +38,9 @@ public class CustomItems {
         String key = item.getPersistentDataContainer().get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
         if (key != null) {
             CustomItem base = items.get(key);
+
             // get the modifiers here once they are added
-            return new CustomItemInstance(base);
+            return new CustomItemInstance(base, new ArrayList<>());
         }
 
         return null;

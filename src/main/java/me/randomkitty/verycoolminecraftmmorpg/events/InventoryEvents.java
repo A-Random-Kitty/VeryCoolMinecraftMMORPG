@@ -7,7 +7,7 @@ import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class InventoryEvents implements Listener {
@@ -34,6 +34,27 @@ public class InventoryEvents implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getInventory().getHolder() instanceof CustomInventory cinv) {
             cinv.handleClick(event);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        if (event.getInventory().getHolder() instanceof CustomInventory cinv) {
+            cinv.handleOpen(event);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryCloseEvent event) {
+        if (event.getInventory().getHolder() instanceof CustomInventory cinv) {
+            cinv.handleClose(event);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryDragEvent event) {
+        if (event.getInventory().getHolder() instanceof CustomInventory cinv) {
+            cinv.handleDrag(event);
         }
     }
 }

@@ -8,12 +8,10 @@ import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 
 public class GrassySheep extends CustomSheep {
 
@@ -30,13 +28,13 @@ public class GrassySheep extends CustomSheep {
     public GrassySheep(Location location) {
         super(location);
 
-        setColor(DyeColor.LIME);
+        this.setColor(DyeColor.LIME);
         this.getAttributes().registerAttribute(Attributes.ATTACK_DAMAGE);
-        getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(8);
-        getAttribute(Attributes.MAX_HEALTH).setBaseValue(25);
-        setHealth(25);
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(8);
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(25);
+        this.setHealth(25);
 
-        updateDisplayName();
+        this.updateDisplayName();
     }
 
     @Override
@@ -48,7 +46,7 @@ public class GrassySheep extends CustomSheep {
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new PanicGoal(this, 2.0f));
-        super.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.750F, false));
+        goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.750F, false));
         goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1F));
         goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         this.stayCloseToOrginGoal = new StayCloseToOrginGoal(this, 15);

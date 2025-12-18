@@ -1,28 +1,18 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
-import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
-import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
-import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
-import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CustomSheep extends Sheep implements CustomCreature {

@@ -5,7 +5,6 @@ import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.visual.FakeItemEntity;
 import me.randomkitty.verycoolminecraftmmorpg.player.PlayerCurrency;
 import me.randomkitty.verycoolminecraftmmorpg.player.PlayerScoreboard;
-import me.randomkitty.verycoolminecraftmmorpg.skills.Skill;
 import me.randomkitty.verycoolminecraftmmorpg.skills.combat.CombatSkill;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;

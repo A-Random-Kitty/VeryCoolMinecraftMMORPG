@@ -142,6 +142,7 @@ public class ShopEntry implements ConfigurationSerializable {
                     }
                 }
 
+                // check if somehow the player didn't have enough items to spend meaning some logic is wrong here
                 if (remaining > 0) {
                     throw new RuntimeException("Very big scary shop error (should not happen very bad)");
                 }

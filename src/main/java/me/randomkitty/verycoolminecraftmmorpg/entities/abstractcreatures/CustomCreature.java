@@ -1,11 +1,9 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
-import io.papermc.paper.adventure.PaperAdventure;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityDefaultDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomEntityRareDrop;
 import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
-import net.kyori.adventure.text.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;

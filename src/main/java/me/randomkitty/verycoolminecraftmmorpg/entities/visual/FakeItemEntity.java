@@ -17,13 +17,11 @@ public class FakeItemEntity extends ItemEntity {
 
     public FakeItemEntity(Level level, double posX, double posY, double posZ, ItemStack stack) {
         super(level, posX, posY, posZ, stack);
-        // 1.75 seconds (60 ticks) before despawn
+        // 1.75 seconds (35 ticks) before despawn
         this.age = 5965;
         this.setNeverPickUp();
 
     }
-
-
 
     @Override
     public void playerTouch(Player entity) {
