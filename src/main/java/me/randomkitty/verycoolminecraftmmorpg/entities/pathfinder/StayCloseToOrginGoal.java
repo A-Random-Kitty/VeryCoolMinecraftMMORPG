@@ -21,12 +21,13 @@ public class StayCloseToOrginGoal extends Goal {
     public boolean canUse() {
 
 
-        return mob.distanceToSqr(origin.getX(), origin.getY(), origin.getZ()) >= (range * range);
+        return mob.distanceToSqr(origin.getX(), origin.getY(), origin.getZ()) >= (range * range) && !mob.getNavigation().isDone();
     }
 
     @Override
     public boolean canContinueToUse() {
-        return mob.distanceToSqr(origin.getX(), origin.getY(), origin.getZ()) >= (range * range);
+        return !mob.getNavigation().isDone();
+        //return mob.distanceToSqr(origin.getX(), origin.getY(), origin.getZ()) >= (range * range) - 2;
     }
 
     @Override
@@ -41,6 +42,6 @@ public class StayCloseToOrginGoal extends Goal {
 
     @Override
     public void tick() {
-        this.mob.getNavigation().moveTo(origin.getX(), origin.getY(), origin.getZ(), 1);
+        //this.mob.getNavigation().moveTo(origin.getX(), origin.getY(), origin.getZ(), 1);
     }
 }

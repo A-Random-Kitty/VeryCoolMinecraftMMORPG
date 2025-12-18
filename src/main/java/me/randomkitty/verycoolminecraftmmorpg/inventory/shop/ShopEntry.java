@@ -3,10 +3,13 @@ package me.randomkitty.verycoolminecraftmmorpg.inventory.shop;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItem;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import me.randomkitty.verycoolminecraftmmorpg.player.PlayerCurrency;
+import me.randomkitty.verycoolminecraftmmorpg.player.PlayerScoreboard;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
@@ -83,6 +86,9 @@ public class ShopEntry implements ConfigurationSerializable {
 
         ItemStack[] contents = player.getInventory().getContents();
         for (int i = 0; i < contents.length; i++) {
+            if (contents[i] == null || contents[i].getType() == Material.AIR)
+                continue;
+
             CustomItem item = CustomItems.getCustomItem(contents[i]);
 
             if (item != null) {
@@ -110,23 +116,26 @@ public class ShopEntry implements ConfigurationSerializable {
         }
 
         if (canAfford) {
+            currency.spendCoins(coinsCost);
+            PlayerScoreboard.updateCoins(player);
+
             for (Map.Entry<CustomItem, Integer> entry : itemsCost.entrySet()) {
                 int remaining = entry.getValue();
 
                 for (int i = 0; i < contents.length; i++) {
 
                     if (slotItemType.get(i) == entry.getKey()) {
-                        int amount = contents[i].getAmount();
-                        if (amount > remaining) {
-                            remaining -= amount;
-                            contents[i].setAmount(amount - remaining);
+                        int currentAmount = contents[i].getAmount();
+                        if (currentAmount > remaining) {
+                            contents[i].setAmount(currentAmount - remaining);
+                            remaining -= currentAmount;
                             break;
-                        } else if (remaining == amount) {
-                            remaining -= amount;
+                        } else if (remaining == currentAmount) {
+                            remaining -= currentAmount;
                             player.getInventory().setItem(i, null);
                             break;
                         } else {
-                            remaining -= amount;
+                            remaining -= currentAmount;
                             player.getInventory().setItem(i, null);
                         }
 
@@ -142,6 +151,8 @@ public class ShopEntry implements ConfigurationSerializable {
             ItemStack newItem = item.newItemStack();
             newItem.setAmount(amount);
             player.give(newItem);
+
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1f, 1f);
         }
 
     }
