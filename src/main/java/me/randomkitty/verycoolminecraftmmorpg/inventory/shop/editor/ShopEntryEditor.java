@@ -7,6 +7,7 @@ import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -86,5 +87,10 @@ public class ShopEntryEditor implements CustomInventory {
     @Override
     public void handleMoveItem(InventoryMoveItemEvent event) {
 
+    }
+
+    @Override
+    public void handleDrop(PlayerDropItemEvent event) {
+        event.setCancelled(true);
     }
 }

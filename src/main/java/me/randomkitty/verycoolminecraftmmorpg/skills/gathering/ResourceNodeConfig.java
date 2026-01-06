@@ -1,5 +1,6 @@
 package me.randomkitty.verycoolminecraftmmorpg.skills.gathering;
 
+import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -26,7 +27,7 @@ public class ResourceNodeConfig {
         try {
             config.save(configFile);
         } catch (IOException e) {
-            Bukkit.getLogger().severe("Failed to save resource nodes");
+            VeryCoolMinecraftMMORPG.LOGGER.severe("Failed to save resource nodes");
         }
     }
 

@@ -1,11 +1,14 @@
 package me.randomkitty.verycoolminecraftmmorpg.events;
 
+import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
 import io.papermc.paper.event.player.PlayerClientLoadedWorldEvent;
+import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import me.randomkitty.verycoolminecraftmmorpg.player.PlayerScoreboard;
 import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
 import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,19 +25,29 @@ public class ConnectionEvents implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
+        player.getAttribute(Attribute.ATTACK_SPEED).setBaseValue(1000);
 
         PlayerData.initPlayer(player);
         PlayerAttributes.initPlayer(player);
+        PlayerAttributes.calculateAttributes(player);
 
         event.joinMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text(" joined the game").color(NamedTextColor.GREEN)));
+        player.setFallDistance(0);
+        player.setFireTicks(0);
+
     }
 
     @EventHandler
     public void onPlayerLoadWorld(PlayerClientLoadedWorldEvent event) {
         Player player = event.getPlayer();
+        player.teleport(VeryCoolMinecraftMMORPG.CONFIG.getSpawnLocation());
 
-        PlayerAttributes.calculateAttributes(player);
         PlayerScoreboard.applyPlayerScoreboard(player);
+    }
+
+    @EventHandler
+    public void onSpawnLocation(AsyncPlayerSpawnLocationEvent event) {
+        event.setSpawnLocation(VeryCoolMinecraftMMORPG.CONFIG.getSpawnLocation());
     }
 
     @EventHandler

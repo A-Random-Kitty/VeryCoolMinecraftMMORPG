@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
 
-public class CustomEntityDefaultDrop {
+public class DefaultLootDrop {
 
     private static final Random random = new Random();
 
@@ -13,7 +13,7 @@ public class CustomEntityDefaultDrop {
     private final int maxDrops;
     private final CustomItem drop;
 
-    public CustomEntityDefaultDrop(int minDrops, int maxDrops, CustomItem drop) {
+    public DefaultLootDrop(int minDrops, int maxDrops, CustomItem drop) {
         this.minDrops = minDrops;
         this.maxDrops = maxDrops + 1; // add 1 because randInt is exclusive of max
         this.drop = drop;

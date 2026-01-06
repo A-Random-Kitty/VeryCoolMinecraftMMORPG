@@ -1,6 +1,9 @@
 package me.randomkitty.verycoolminecraftmmorpg.commands;
 
 import me.randomkitty.verycoolminecraftmmorpg.inventory.shop.Shops;
+import me.randomkitty.verycoolminecraftmmorpg.util.PermissionUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,6 +16,11 @@ public class ShopCommand implements CommandExecutor {
 
         if (args.length < 1 || !(sender instanceof Player player))
             return true;
+
+        if (!(PermissionUtil.hasPermission(sender, "coolrpg.shop.open"))) {
+            sender.sendMessage(Component.text("No permission", NamedTextColor.RED));
+            return true;
+        }
 
         switch (args[0]) {
             case "open":

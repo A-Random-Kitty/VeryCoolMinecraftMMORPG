@@ -154,6 +154,8 @@ public class ShopEntry implements ConfigurationSerializable {
             player.give(newItem);
 
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1f, 1f);
+        } else {
+            player.sendMessage(Component.text("You don't have the required items").color(NamedTextColor.RED));
         }
 
     }

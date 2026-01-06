@@ -8,7 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.Inventory;
 
 public class InventoryEvents implements Listener {
 
@@ -55,6 +58,15 @@ public class InventoryEvents implements Listener {
     public void onInventoryClick(InventoryDragEvent event) {
         if (event.getInventory().getHolder() instanceof CustomInventory cinv) {
             cinv.handleDrag(event);
+        }
+    }
+
+    @EventHandler
+    public void onItemDrop(PlayerDropItemEvent event) {
+        if (event.getPlayer().getOpenInventory() instanceof Inventory inventory) {
+            if (inventory instanceof CustomInventory cinv) {
+                cinv.handleDrop(event);
+            }
         }
     }
 }

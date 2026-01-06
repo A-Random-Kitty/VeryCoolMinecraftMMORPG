@@ -1,23 +1,29 @@
 package me.randomkitty.verycoolminecraftmmorpg.player.attributes;
 
 import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
+import me.randomkitty.verycoolminecraftmmorpg.item.CustomItem;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItemInstance;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
+import me.randomkitty.verycoolminecraftmmorpg.item.modifier.ItemModifierInstance;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class PlayerAttributes {
+
+    public static final NamespacedKey PROJECTILE_DAMAGE_KEY = new NamespacedKey(VeryCoolMinecraftMMORPG.NAMESPACE, "projectile_damage");
+    public static final NamespacedKey PROJECTILE_CRITICAL_DAMAGE_KEY = new NamespacedKey(VeryCoolMinecraftMMORPG.NAMESPACE, "projectile_critical_damage");
+    public static final NamespacedKey PROJECTILE_CRITICAL_CHANCE_KEY = new NamespacedKey(VeryCoolMinecraftMMORPG.NAMESPACE, "projectile_critical_chance");
 
     private static final Random random = new Random();
 
@@ -31,17 +37,19 @@ public class PlayerAttributes {
     }
     public static PlayerAttributes getAttributes(Player player) { return playerAttributes.get(player); }
 
-    private static BukkitTask displayAttributesTask;
+    private static BukkitTask updateAttributesTask;
 
-    public static void startDisplayAttributesTask() {
-        displayAttributesTask = Bukkit.getScheduler().runTaskTimer(VeryCoolMinecraftMMORPG.INSTANCE, new Runnable() {
+    public static void startUpdateAttributesTask() {
+        updateAttributesTask = Bukkit.getScheduler().runTaskTimer(VeryCoolMinecraftMMORPG.INSTANCE, new Runnable() {
             @Override
             public void run() {
                 for (PlayerAttributes attributes : playerAttributes.values()) {
+                    attributes.player.setHealth(Math.min(attributes.player.getHealth() + attributes.healthRegen, attributes.health));
+                    attributes.currentMana = Math.min(attributes.currentMana + attributes.healthRegen, attributes.mana);
                     attributes.updateActionbar();
                 }
             }
-        }, 30, 30);
+        }, 20, 20);
     }
 
     public static void stopDisplayPlayerAttributesTask() {
@@ -74,41 +82,51 @@ public class PlayerAttributes {
 
     private final Player player;
 
+    private CustomItemInstance mainHandItem;
+
     public double health;
     public double defense;
-    public double intelligence;
+    public double mana;
     public double damage;
     public double critChance;
     public double critDamage;
 
+    public double healthRegen;
+    public double manaRegen;
+
     public double totalDamage;
     public double totalCriticalDamage;
+
+    public double currentMana;
 
     private PlayerAttributes(Player player) {
         this.player = player;
     }
 
-    public boolean isCrit() {
-        return (random.nextDouble() <= (critChance / 100));
+    public void onUseItem(PlayerInteractEvent event) {
+        if (mainHandItem != null)
+            mainHandItem.baseItem.onUseItem(event);
     }
 
-    public double getDamageAfterDefence(double damageAmount) {
-        return damageAmount / (1 + (defense / 50));
-    }
 
     public void calculateAttributes(ItemStack mainHandItemStack, ItemStack[] armorContents) {
         defense = 0; // 🛡
         health = 50; // ❤
-        intelligence = 50;  // ☄
+        mana = 50;  // ☄
         damage = 0; // 🗡
         critChance = 15; // ☠
         critDamage = 30; // ⚔
 
-        if (mainHandItemStack != null) {
-            CustomItemInstance mainHand = CustomItems.fromItemStack(mainHandItemStack);
+        final List<CustomItemInstance> gear = new ArrayList<>();
 
-            if (mainHand != null && mainHand.baseItem.getSlot() == EquipmentSlot.HAND)
-                addAttributes(mainHand);
+        if (mainHandItemStack != null) {
+            mainHandItem = CustomItems.fromItemStack(mainHandItemStack);
+
+            if (mainHandItem != null && mainHandItem.baseItem.getSlot() == EquipmentSlot.HAND) {
+                gear.add(mainHandItem);
+                mainHandItem.addAttributes(this);
+            }
+
         }
 
         for (ItemStack armorItem : armorContents) {
@@ -116,7 +134,8 @@ public class PlayerAttributes {
                 CustomItemInstance customArmorItem  = CustomItems.fromItemStack(armorItem);
 
                 if (customArmorItem != null) {
-                    addAttributes(customArmorItem);
+                    customArmorItem.addAttributes(this);
+                    gear.add(customArmorItem);
                 }
             }
         }
@@ -130,18 +149,20 @@ public class PlayerAttributes {
             totalCriticalDamage = damage * (1 + (critDamage / 100));
         }
 
+        healthRegen = health / 50;
+        manaRegen = mana / 50;
+
+        for (CustomItemInstance gearItem : gear) {
+            gearItem.applyItemMultipliers(this);
+        }
+
+        if (currentMana > mana)
+            currentMana = mana;
+
+
         player.setHealthScale(getDisplayMaxHealth());
         player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(health);
         updateActionbar();
-    }
-
-    private void addAttributes(CustomItemInstance item) {
-        defense += item.baseItem.getDefense();
-        health += item.baseItem.getHealth();
-        intelligence += item.baseItem.getIntelligence();
-        damage += item.baseItem.getDamage();
-        critChance += item.baseItem.getCriticalChance();
-        critDamage += item.baseItem.getCriticalDamage();
     }
 
     private double getDisplayMaxHealth() {
@@ -149,6 +170,18 @@ public class PlayerAttributes {
     }
 
     public void updateActionbar() {
-        player.sendActionBar(Component.text(StringUtil.formatedDouble(player.getHealth()) + "/" + StringUtil.formatedDouble(health) + "❤").color(NamedTextColor.RED));
+        player.sendActionBar(
+                Component.text(StringUtil.formatedDouble(player.getHealth()) + "/" + StringUtil.noDecimalDouble(health) + "❤").color(NamedTextColor.RED)
+                .append(Component.text("               "))
+                .append(Component.text(StringUtil.noDecimalDouble(mana) + "/" + StringUtil.noDecimalDouble(mana) + "☄").color(NamedTextColor.AQUA))
+        );
+    }
+
+    public boolean isCrit() {
+        return (random.nextDouble() <= (critChance / 100));
+    }
+
+    public double getDamageAfterDefence(double damageAmount) {
+        return damageAmount / (1 + (defense / 100));
     }
 }

@@ -78,7 +78,7 @@ public class PlayerData {
                 playerDataFolder.mkdirs();
                 dataFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().severe("Failed to create data file for player with uuid: " + uuid);
+                VeryCoolMinecraftMMORPG.LOGGER.severe("Failed to create data file for player with uuid: " + uuid);
                 player.kick(Component.text("Failed to create data file").color(NamedTextColor.RED));
             }
 
@@ -107,7 +107,7 @@ public class PlayerData {
         try {
             data.save(dataFile);
         } catch (IOException e) {
-            Bukkit.getLogger().severe("Failed to save data for player with uuid: " + uuid);
+            VeryCoolMinecraftMMORPG.LOGGER.severe("Failed to save data for player with uuid: " + uuid);
         }
     }
 }

@@ -5,8 +5,6 @@ import net.kyori.adventure.text.TextComponent;
 
 public enum ItemType {
 
-    // DO NOT REORDER THESE
-
     MATERIAL("MATERIAL"),
     ITEM("ITEM"),
     SWORD("SWORD"),
@@ -14,7 +12,11 @@ public enum ItemType {
     WAND("WAND"),
     AXE("AXE"),
     PICKAXE("PICKAXE"),
-    SHOVEL("SHOVEL");
+    SHOVEL("SHOVEL"),
+    HELMET("HELMET"),
+    CHESTPLATE("CHESTPLATE"),
+    LEGGINGS("LEGGINGS"),
+    BOOTS("BOOTS");
 
     private final String text;
 

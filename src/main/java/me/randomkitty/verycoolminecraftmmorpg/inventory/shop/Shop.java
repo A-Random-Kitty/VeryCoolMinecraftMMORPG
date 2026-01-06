@@ -1,5 +1,6 @@
 package me.randomkitty.verycoolminecraftmmorpg.inventory.shop;
 
+import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import me.randomkitty.verycoolminecraftmmorpg.inventory.CustomInventory;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -8,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -69,6 +71,7 @@ public class Shop implements CustomInventory {
             if (i < contents.length) {
                 entrySlots.put(i, entry);
                 contents[i] = entry.getGuiItem();
+                i++;
             } else {
                 break;
             }
@@ -131,6 +134,11 @@ public class Shop implements CustomInventory {
         }
     }
 
+    @Override
+    public void handleDrop(PlayerDropItemEvent event) {
+        event.setCancelled(true);
+    }
+
     public void saveToFile(File file) {
         YamlConfiguration configuration = new YamlConfiguration();
 
@@ -143,7 +151,7 @@ public class Shop implements CustomInventory {
         try {
             configuration.save(file);
         } catch (IOException e) {
-            Bukkit.getLogger().severe("Failed to save shop");
+            VeryCoolMinecraftMMORPG.LOGGER.severe("Failed to save shop");
             e.printStackTrace();
         }
 

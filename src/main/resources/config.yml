@@ -1,0 +1,6 @@
+spawn_location:
+  ==: org.bukkit.Location
+  world: world
+  x: 0
+  y: -58
+  z: 0

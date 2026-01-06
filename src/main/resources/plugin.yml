@@ -5,5 +5,11 @@ api-version: '1.21'
 
 commands:
   shop:
-  test:
+  openshop:
+  spawncustomentity:
   givecustomitem:
+  modify:
+  fixitem:
+  givebook:
+  loadspawners:
+  loadconfig:

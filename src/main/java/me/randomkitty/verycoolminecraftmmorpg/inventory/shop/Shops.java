@@ -42,7 +42,7 @@ public class Shops {
                         if (shop != null) {
                             shops.put(FilenameUtils.removeExtension(file.getName()), shop);
                         } else {
-                            Bukkit.getLogger().warning("Failed to load shop from file: " + file.getName());
+                            VeryCoolMinecraftMMORPG.LOGGER.warning("Failed to load shop from file: " + file.getName());
                         }
                     }
                 }

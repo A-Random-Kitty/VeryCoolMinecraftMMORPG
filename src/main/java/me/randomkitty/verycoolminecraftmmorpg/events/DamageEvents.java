@@ -3,25 +3,46 @@ package me.randomkitty.verycoolminecraftmmorpg.events;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import io.papermc.paper.event.entity.EntityDyeEvent;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
+import io.papermc.paper.persistence.PersistentDataContainerView;
+import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomCreature;
 import me.randomkitty.verycoolminecraftmmorpg.entities.visual.DisappearingTextDisplay;
 import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
+import me.randomkitty.verycoolminecraftmmorpg.util.RandomUtil;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.minecraft.world.entity.monster.Zombie;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.List;
 
 public class DamageEvents implements Listener {
 
+    private static final List<TextComponent> deathMessages = List.of(
+            Component.text(" died", NamedTextColor.RED),
+            Component.text(" had skill issue", NamedTextColor.RED),
+            Component.text(" touched grass", NamedTextColor.RED),
+            Component.text(" fell off", NamedTextColor.RED),
+            Component.text(" \"lagged\"", NamedTextColor.RED),
+            Component.text(" pressed alt f4", NamedTextColor.RED)
+    );
+
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
+        VeryCoolMinecraftMMORPG.LOGGER.info("damage: " + event.getDamage());
         if (event.getEntity() instanceof Player player) {
 
             if (event instanceof EntityDamageByEntityEvent entityEvent) {
@@ -29,7 +50,7 @@ public class DamageEvents implements Listener {
                 if (entityEvent.getDamager() instanceof Player) {
                     event.setCancelled(true);
                     return;
-                } else if (((CraftEntity) event.getEntity()).getHandle() instanceof CustomCreature) {
+                } else if (((CraftEntity) entityEvent.getDamager()).getHandle() instanceof CustomCreature) {
                     onCustomEntityDamagePlayer(entityEvent, player);;
                 } else {
                     onPlayerDamageFromNonCustomEntity(entityEvent, player);
@@ -48,17 +69,17 @@ public class DamageEvents implements Listener {
 
                     if (entityEvent.getDamager() instanceof Player player) {
                         onPlayerDamageCustomEntity(entityEvent, player, creature);
+                    } else {
+                        onCustomEntityDamagedByEntity(entityEvent, creature);
                     }
 
+                } else {
+                    onCustomEntityDamageNoEntity(event, creature);
                 }
             } else {
                 // Don't allow non-custom creatures to be hit because there is no reason to
 
-                if (event.getEntity() instanceof ItemEntity) {
-                    if (event.getCause() != EntityDamageEvent.DamageCause.VOID) {
-                        event.setCancelled(true);
-                    }
-                } else {
+                if (event.getCause() != EntityDamageEvent.DamageCause.VOID && event.getCause() != EntityDamageEvent.DamageCause.KILL) {
                     event.setCancelled(true);
                 }
             }
@@ -68,6 +89,11 @@ public class DamageEvents implements Listener {
     private void onPlayerDamageCustomEntity(EntityDamageByEntityEvent event, Player player, CustomCreature creature) {
         PlayerAttributes attributes = PlayerAttributes.getAttributes(player);
 
+        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
+            event.setCancelled(true);
+            return;
+        }
+
         if (attributes.isCrit()) {
             event.setDamage(attributes.totalCriticalDamage);
             DisappearingTextDisplay.spawn(event.getEntity().getLocation(), ChatColor.RED + StringUtil.noDecimalDouble(attributes.totalCriticalDamage) + "⚔", 35);
@@ -76,12 +102,6 @@ public class DamageEvents implements Listener {
             DisappearingTextDisplay.spawn(event.getEntity().getLocation(), ChatColor.GRAY + StringUtil.noDecimalDouble(attributes.totalDamage) + "\uD83D\uDDE1", 35);
         }
 
-    }
-
-    private  void onCustomEntityDamagePlayer(EntityDamageByEntityEvent event, Player player) {
-        PlayerAttributes attributes = PlayerAttributes.getAttributes(player);
-
-        event.setDamage(attributes.getDamageAfterDefence(event.getDamage()));
     }
 
     private void onPlayerDamageFromNonCustomEntity(EntityDamageByEntityEvent event, Player player) {
@@ -96,11 +116,59 @@ public class DamageEvents implements Listener {
         event.setDamage(attributes.getDamageAfterDefence(event.getDamage()));
     }
 
-    @EventHandler
-    public void onDeath(PlayerDeathEvent event) {
+    private  void onCustomEntityDamagePlayer(EntityDamageByEntityEvent event, Player player) {
+        PlayerAttributes attributes = PlayerAttributes.getAttributes(player);
+
+        event.setDamage(attributes.getDamageAfterDefence(event.getDamage()));
+    }
+
+    private void onCustomEntityDamagedByEntity(EntityDamageByEntityEvent event, CustomCreature creature) {
+        if (event.getEntity() instanceof Projectile projectile) {
+            if (projectile.getShooter() instanceof Player) {
+                handleProjectileDamageEntity(event, projectile);
+            } else {
+                event.setCancelled(true);
+            }
+        } else {
+            event.setCancelled(true);
+        }
+    }
+
+    private void onCustomEntityDamageNoEntity(EntityDamageEvent event, CustomCreature creature) {
         event.setCancelled(true);
     }
 
+    private void handleProjectileDamageEntity(EntityDamageByEntityEvent event, Projectile projectile) {
+        PersistentDataContainerView data =  projectile.getPersistentDataContainer();
 
+        if (data.has(PlayerAttributes.PROJECTILE_DAMAGE_KEY) && data.has(PlayerAttributes.PROJECTILE_CRITICAL_DAMAGE_KEY) && data.has(PlayerAttributes.PROJECTILE_CRITICAL_CHANCE_KEY)) {
+            if (RandomUtil.percentChance(data.get(PlayerAttributes.PROJECTILE_CRITICAL_CHANCE_KEY, PersistentDataType.FLOAT))) {
+                double damage = data.get(PlayerAttributes.PROJECTILE_CRITICAL_DAMAGE_KEY, PersistentDataType.FLOAT);
+                event.setDamage(damage);
+                DisappearingTextDisplay.spawn(event.getEntity().getLocation(), ChatColor.RED + StringUtil.noDecimalDouble(damage) + "⚔", 35);
+
+            } else {
+                double damage = data.get(PlayerAttributes.PROJECTILE_DAMAGE_KEY, PersistentDataType.FLOAT);
+                event.setDamage(damage);
+                DisappearingTextDisplay.spawn(event.getEntity().getLocation(), ChatColor.GRAY + StringUtil.noDecimalDouble(damage) + "\uD83D\uDDE1", 35);
+            }
+        } else {
+            event.setCancelled(true); // doesn't have custom damage values
+        }
+    }
+
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        Player player = event.getPlayer();
+
+        event.setCancelled(true);
+        player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getValue());
+        player.teleport(VeryCoolMinecraftMMORPG.CONFIG.getSpawnLocation());
+        player.setFallDistance(0);
+        Bukkit.broadcast(player.displayName().append(deathMessages.get(RandomUtil.RANDOM.nextInt(deathMessages.size()))));
+        player.setFireTicks(0);
+        player.getActivePotionEffects().forEach(effect -> {player.removePotionEffect(effect.getType());});
+    }
 
 }

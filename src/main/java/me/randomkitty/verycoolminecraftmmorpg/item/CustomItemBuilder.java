@@ -1,5 +1,7 @@
 package me.randomkitty.verycoolminecraftmmorpg.item;
 
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
 
@@ -11,6 +13,7 @@ public class CustomItemBuilder {
     public String key;
 
     public Material material = Material.BARRIER;
+    public Color color = Color.WHITE;
     public int maxStackSize = 64;
 
     public Rarity rarity = Rarity.STRANGE;
@@ -26,7 +29,7 @@ public class CustomItemBuilder {
 
     public double health = 0;
     public double defense = 0;
-    public double intelligence = 0;
+    public double mana = 0;
 
     public CustomItemBuilder(String key) {
         this.key = key;
@@ -34,6 +37,11 @@ public class CustomItemBuilder {
 
     public CustomItemBuilder setMaterial(Material material) {
         this.material = material;
+        return this;
+    }
+
+    public CustomItemBuilder setColor(Color color) {
+        this.color = color;
         return this;
     }
 
@@ -97,8 +105,8 @@ public class CustomItemBuilder {
         return this;
     }
 
-    public CustomItemBuilder setIntelligence(double intelligence) {
-        this.intelligence = intelligence;
+    public CustomItemBuilder setMana(double mana) {
+        this.mana = mana;
         return this;
     }
 }

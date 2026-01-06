@@ -1,11 +1,18 @@
 package me.randomkitty.verycoolminecraftmmorpg.item;
 
+import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
+import me.randomkitty.verycoolminecraftmmorpg.item.items.EnchantedBookItem;
+import me.randomkitty.verycoolminecraftmmorpg.item.items.ModifiableItem;
+import me.randomkitty.verycoolminecraftmmorpg.item.modifier.ItemModifiers;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nullable;
@@ -18,12 +25,24 @@ public class CustomItems {
     public static final NamespacedKey CUSTOM_ITEM_KEY = new NamespacedKey(VeryCoolMinecraftMMORPG.NAMESPACE, "custom_item");
 
     public static final CustomItem MUTTON;
+    public static final CustomItem GRASSY_WOOL;
+    public static final CustomItem RAM_HORN_FRAGMENT;
 
-    public static final CustomItem BLADE_OF_GRASS;
-    public static final CustomItem BLADES_OF_GRASS;
-    public static final CustomItem SHARP_STICK;
+    public static final ModifiableItem SHARP_STICK;
+    public static final ModifiableItem BLADE_OF_GRASS;
+    public static final ModifiableItem RAM_HORN;
+    public static final ModifiableItem BLADES_OF_GRASS;
 
-    public static final CustomItem SWORD_OF_DIVINE_WRATH;
+
+    public static final ModifiableItem SWORD_OF_DIVINE_WRATH;
+
+    public static final ModifiableItem GRASSY_HELMET;
+    public static final ModifiableItem GRASSY_CHESTPLATE;
+    public static final ModifiableItem GRASSY_LEGGINGS;
+    public static final ModifiableItem GRASSY_BOOTS;
+
+
+    public static final EnchantedBookItem ENCHANTED_BOOK;
 
     public static CustomItem get(String key) {
         return items.get(key);
@@ -35,12 +54,13 @@ public class CustomItems {
     }
 
     public static @Nullable CustomItemInstance fromItemStack(ItemStack item) {
-        String key = item.getPersistentDataContainer().get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
+        PersistentDataContainerView container = item.getPersistentDataContainer();
+        String key = container.get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
+
         if (key != null) {
             CustomItem base = items.get(key);
 
-            // get the modifiers here once they are added
-            return new CustomItemInstance(base, new ArrayList<>());
+            return base.fromItemStack(item);
         }
 
         return null;
@@ -53,12 +73,21 @@ public class CustomItems {
     static {
         // Init items and stuff or something
         MUTTON = register(new CustomItem(new CustomItemBuilder("mutton").setType(ItemType.MATERIAL).setRarity(Rarity.COMMON).setMaterial(Material.MUTTON).setName("Mutton")));
+        GRASSY_WOOL = register(new CustomItem(new CustomItemBuilder("grassy_wool").setType(ItemType.MATERIAL).setRarity(Rarity.COMMON).setMaterial(Material.LIME_WOOL).setName("Grassy Wool")));
+        RAM_HORN_FRAGMENT = register(new CustomItem(new CustomItemBuilder("ram_horn_fragment").setType(ItemType.MATERIAL).setRarity(Rarity.UNCOMMON).setMaterial(Material.STONE_BUTTON).setName("Ram Horn Fragment")));
 
-        BLADE_OF_GRASS = register(new CustomItem(new CustomItemBuilder("blade_of_grass").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.UNCOMMON).setMaterial(Material.BAMBOO).setMaxStackSize(1).setDamage(15).setName("Blade of Grass")));
-        BLADES_OF_GRASS = register(new CustomItem(new CustomItemBuilder("blades_of_grass").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.RARE).setMaterial(Material.SUGAR_CANE).setMaxStackSize(1).setDamage(25).setCriticalDamage(50).setCriticalChance(35).setName("Blades of Grass")));
-        SHARP_STICK = register(new CustomItem(new CustomItemBuilder("sharp_stick").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.COMMON).setMaterial(Material.STICK).setMaxStackSize(1).setDamage(10).setName("Sharp Stick")));
+        BLADE_OF_GRASS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("blade_of_grass").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.UNCOMMON).setMaterial(Material.BAMBOO).setMaxStackSize(1).setDamage(15).setName("Blade of Grass")));
+        RAM_HORN = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("ram_horn").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.UNCOMMON).setMaterial(Material.POINTED_DRIPSTONE).setMaxStackSize(1).setDamage(20).setCriticalDamage(25).setName("Ram Horn")));
+        BLADES_OF_GRASS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("blades_of_grass").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.RARE).setMaterial(Material.SUGAR_CANE).setMaxStackSize(1).setDamage(25).setCriticalDamage(50).setCriticalChance(35).setName("Blades of Grass")));
+        SHARP_STICK = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("sharp_stick").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.COMMON).setMaterial(Material.STICK).setMaxStackSize(1).setDamage(10).setName("Sharp Stick")));
 
-        SWORD_OF_DIVINE_WRATH = register(new CustomItem(new CustomItemBuilder("sword_of_divine_wrath").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.MYTHICAL).setMaterial(Material.NETHERITE_SWORD).setMaxStackSize(1).setDamage(99999).setName("Sword of Divine Wrath")));
+        SWORD_OF_DIVINE_WRATH = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("sword_of_divine_wrath").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.MYTHICAL).setMaterial(Material.NETHERITE_SWORD).setMaxStackSize(1).setDamage(99999).setName("Sword of Divine Wrath")));
 
+        GRASSY_HELMET = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("grassy_helmet").setType(ItemType.HELMET).setSlot(EquipmentSlot.HEAD).setRarity(Rarity.UNCOMMON).setMaterial(Material.LEATHER_HELMET).setColor(Color.LIME).setMaxStackSize(1).setDefense(6).setHealth(5).setName("Grassy Helmet")));
+        GRASSY_CHESTPLATE = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("grassy_chestplate").setType(ItemType.CHESTPLATE).setSlot(EquipmentSlot.CHEST).setRarity(Rarity.UNCOMMON).setMaterial(Material.LEATHER_CHESTPLATE).setColor(Color.LIME).setMaxStackSize(1).setDefense(8).setHealth(5).setName("Grassy Chestplate")));
+        GRASSY_LEGGINGS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("grassy_leggings").setType(ItemType.LEGGINGS).setSlot(EquipmentSlot.LEGS).setRarity(Rarity.UNCOMMON).setMaterial(Material.LEATHER_LEGGINGS).setColor(Color.LIME).setMaxStackSize(1).setDefense(8).setHealth(5).setName("Grassy Leggings")));
+        GRASSY_BOOTS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("grassy_boots").setType(ItemType.BOOTS).setSlot(EquipmentSlot.FEET).setRarity(Rarity.UNCOMMON).setMaterial(Material.LEATHER_BOOTS).setColor(Color.LIME).setMaxStackSize(1).setDefense(6).setHealth(5).setName("Grassy Boots")));
+
+        ENCHANTED_BOOK = (EnchantedBookItem) register(new EnchantedBookItem(new CustomItemBuilder("enchanted_book").setType(ItemType.ITEM).setRarity(Rarity.RARE).setMaterial(Material.ENCHANTED_BOOK).setMaxStackSize(1).setName("Enchanted Book")));
     }
 }

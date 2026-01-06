@@ -2,6 +2,9 @@ package me.randomkitty.verycoolminecraftmmorpg.commands;
 
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItem;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
+import me.randomkitty.verycoolminecraftmmorpg.util.PermissionUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,8 +19,10 @@ public class CustomItemCommand implements CommandExecutor {
         if (!(sender instanceof Player player))
             return true;
 
-        if (!sender.hasPermission("coolrpg.give"))
+        if (!(PermissionUtil.hasPermission(player, "coolrpg.item.give"))) {
+            sender.sendMessage(Component.text("No permission", NamedTextColor.RED));
             return true;
+        }
 
         if (args.length != 1)
             return true;

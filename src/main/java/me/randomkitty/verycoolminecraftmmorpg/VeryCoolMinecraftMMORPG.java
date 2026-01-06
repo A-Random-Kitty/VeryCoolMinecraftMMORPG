@@ -1,31 +1,36 @@
 package me.randomkitty.verycoolminecraftmmorpg;
 
-import me.randomkitty.verycoolminecraftmmorpg.commands.CustomItemCommand;
-import me.randomkitty.verycoolminecraftmmorpg.commands.ShopCommand;
-import me.randomkitty.verycoolminecraftmmorpg.commands.TestCommand;
+import me.randomkitty.verycoolminecraftmmorpg.commands.*;
 import me.randomkitty.verycoolminecraftmmorpg.config.RpgConfig;
-import me.randomkitty.verycoolminecraftmmorpg.events.DamageEvents;
-import me.randomkitty.verycoolminecraftmmorpg.events.ConnectionEvents;
-import me.randomkitty.verycoolminecraftmmorpg.events.InteractEvents;
-import me.randomkitty.verycoolminecraftmmorpg.events.InventoryEvents;
+import me.randomkitty.verycoolminecraftmmorpg.entities.spawners.CreatureSpawners;
+import me.randomkitty.verycoolminecraftmmorpg.events.*;
 import me.randomkitty.verycoolminecraftmmorpg.inventory.shop.Shops;
 import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
 import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
+import net.kyori.adventure.text.Component;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.logging.Logger;
 
 public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
 
     public static final String NAMESPACE = "coolrpg";
     public static VeryCoolMinecraftMMORPG INSTANCE;
+    public static Logger LOGGER;
     public static RpgConfig CONFIG;
 
     @Override
     public void onEnable() {
 
         INSTANCE = this;
+        LOGGER = this.getLogger();
         this.saveResource("config.yml", false);
         CONFIG = new RpgConfig(new File(this.getDataFolder(), "config.yml"));
 
@@ -33,24 +38,47 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
 
         manager.registerEvents(new ConnectionEvents(), this);
         manager.registerEvents(new DamageEvents(), this);
+        manager.registerEvents(new EntityEvents(), this);
         manager.registerEvents(new InteractEvents(), this);
         manager.registerEvents(new InventoryEvents(), this);
+        manager.registerEvents(new PlayerEvents(), this);
+        manager.registerEvents(new CommandEvents(), this);
 
         this.getCommand("shop").setExecutor(new ShopCommand());
-        this.getCommand("test").setExecutor(new TestCommand());
+        this.getCommand("openshop").setExecutor(new OpenShopForPlayerCommand());
+        this.getCommand("spawncustomentity").setExecutor(new SpawnCustomEntityCommand());
         this.getCommand("givecustomitem").setExecutor(new CustomItemCommand());
+        this.getCommand("modify").setExecutor(new AttributeModifierCommand());
+        this.getCommand("fixitem").setExecutor(new FixItemCommand());
+        this.getCommand("givebook").setExecutor(new EnchantedBookCommand());
+        this.getCommand("loadspawners").setExecutor(new LoadSpawnersCommand());
+        this.getCommand("loadconfig").setExecutor(new LoadConfigCommand());
 
         //CustomEntityType.register();
 
         Shops.loadAllShops();
         PlayerData.startAutoSave();
-        PlayerAttributes.startDisplayAttributesTask();
+        PlayerAttributes.startUpdateAttributesTask();
+        CreatureSpawners.init();
     }
 
     @Override
     public void onDisable() {
+        CreatureSpawners.stopSpawnMobsTask();
         PlayerAttributes.stopDisplayPlayerAttributesTask();
         PlayerData.stopAutoSave();
         PlayerData.saveAll();
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        LOGGER.info("label");
+
+        if (label.equals("kill") && Arrays.asList(args).contains("@e")) {
+            sender.sendMessage(Component.text("Do not /kill @e"));
+            return false;
+        }
+
+        return true;
     }
 }
