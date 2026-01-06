@@ -7,10 +7,8 @@ import me.randomkitty.verycoolminecraftmmorpg.entities.pathfinder.StayCloseToOrg
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.item.DyeColor;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -77,9 +75,4 @@ public class GrassySheep extends CustomSheep {
 
     @Override
     public String getBaseName() { return ChatColor.GREEN + "Grassy Sheep"; }
-
-    @Override
-    public Map<Player, Double> getDamagers() {
-        return Map.of();
-    }
 }

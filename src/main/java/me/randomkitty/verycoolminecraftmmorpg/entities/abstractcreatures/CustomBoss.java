@@ -17,34 +17,40 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public interface CustomBoss extends CustomCreature {
 
-    default void announceDefeat(Set<Player> damagers) {
-        for (Player player : damagers) {
-            player.sendMessage(Component.text("BOSS DOWN! ", NamedTextColor.DARK_RED, TextDecoration.BOLD).append(Component.text(getBaseName())));
-        }
-    }
+
 
     default EntityDeathEvent dropAllDeathLootCustom(ServerLevel level, DamageSource damageSource, PathfinderMob mob) {
-        if (mob.getLastHurtByPlayer() != null) {
-            Player player = (Player) mob.getLastHurtByPlayer().getBukkitEntity();
+        Map<Player, Double> damagers = getDamagers();
+
+        for (Map.Entry<Player, Double> entry : damagers.entrySet()) {
+
+            entry.getKey().sendMessage(Component.text("BOSS DOWN! ", NamedTextColor.DARK_RED, TextDecoration.BOLD).append(Component.text(getBaseName())));
+
+
             Location dropLocation = new Location(mob.level().getWorld(), mob.getX(), mob.getY(), mob.getZ());
 
             for (RareLootDrop rareDrop : getRareDrops()) {
                 if (rareDrop.shouldDrop()) {
-                    ItemDropUtil.givePlayerLootOrDrop(player, rareDrop.getItem(), dropLocation);
+                    ItemDropUtil.givePlayerLootOrDrop(entry.getKey(), rareDrop.getItem(), dropLocation);
+
+                    if (rareDrop.shouldTellPlayer()) {
+                        entry.getKey().sendMessage(rareDrop.getMessage());
+                    }
                 }
             }
 
             for (DefaultLootDrop defaultDrop : getDefaultDrops()) {
-                ItemDropUtil.givePlayerLootOrDrop(player, defaultDrop.getDrop(), dropLocation);
+                ItemDropUtil.givePlayerLootOrDrop(entry.getKey(), defaultDrop.getDrop(), dropLocation);
             }
 
-            ItemDropUtil.givePlayerCoinsAndDrop(player, getBaseCoinDrop(), mob);
-            ItemDropUtil.givePlayerCombatXpAndDrop(player, getBaseXpDrop(), mob);
+            ItemDropUtil.givePlayerCoinsAndDrop(entry.getKey(), getBaseCoinDrop(), mob);
+            ItemDropUtil.givePlayerCombatXpAndDrop(entry.getKey(), getBaseXpDrop(), mob);
         }
 
         // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way

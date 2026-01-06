@@ -73,9 +73,4 @@ public class AlphaWolfBoss extends CustomWolf implements CustomBoss {
     public String getBaseName() {
         return ChatColor.RED + "Alpha Wolf";
     }
-
-    @Override
-    public Map<org.bukkit.entity.Player, Double> getDamagers() {
-        return Map.of();
-    }
 }

@@ -20,7 +20,7 @@ import java.util.Map;
 
 public abstract class CustomWolf extends Wolf implements CustomCreature {
 
-    private final Map<Player, Float> damages = new HashMap<>();
+    private final Map<Player, Double> damages = new HashMap<>();
     private final Map<Player, Integer> damageTicks = new HashMap<>();
 
 
@@ -76,7 +76,7 @@ public abstract class CustomWolf extends Wolf implements CustomCreature {
                 if (damages.containsKey(player)) {
                     damages.put(player, damages.get(player) + amount);
                 } else {
-                    damages.put(player, amount);
+                    damages.put(player, (double) amount);
                 }
             }
         }
@@ -92,5 +92,14 @@ public abstract class CustomWolf extends Wolf implements CustomCreature {
         updateDisplayName();
     }
 
+    @Override
+    public Map<org.bukkit.entity.Player, Double> getDamagers() {
+        Map<org.bukkit.entity.Player, Double> damagers = new HashMap<>();
 
+        for (Map.Entry<Player, Double> entry : this.damages.entrySet()) {
+            damagers.put((org.bukkit.entity.Player) entry.getKey().getBukkitEntity(), entry.getValue());
+        }
+
+        return damagers;
+    }
 }

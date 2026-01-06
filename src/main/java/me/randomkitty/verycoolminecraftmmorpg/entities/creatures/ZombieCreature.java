@@ -47,9 +47,4 @@ public class ZombieCreature extends CustomPathfinderMob {
     public String getBaseName() {
         return "Zombie";
     }
-
-    @Override
-    public Map<Player, Double> getDamagers() {
-        return Map.of();
-    }
 }

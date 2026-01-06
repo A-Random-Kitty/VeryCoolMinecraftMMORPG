@@ -79,9 +79,4 @@ public class GrassyRam extends CustomSheep {
 
     @Override
     public String getBaseName() { return ChatColor.DARK_GREEN + "Grassy Ram"; }
-
-    @Override
-    public Map<org.bukkit.entity.Player, Double> getDamagers() {
-        return Map.of();
-    }
 }

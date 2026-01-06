@@ -7,11 +7,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueOutput;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
@@ -22,7 +20,7 @@ import java.util.Map;
 
 public abstract class CustomSheep extends Sheep implements CustomCreature {
 
-    private final Map<Player, Float> damages = new HashMap<>();
+    private final Map<Player, Double> damages = new HashMap<>();
     private final Map<Player, Integer> damageTicks = new HashMap<>();
 
     public boolean shearable;
@@ -93,7 +91,7 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
                 if (damages.containsKey(player)) {
                     damages.put(player, damages.get(player) + amount);
                 } else {
-                    damages.put(player, amount);
+                    damages.put(player, (double) amount);
                 }
             }
         }
@@ -107,5 +105,16 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
     public void heal(float amount, EntityRegainHealthEvent.RegainReason regainReason, boolean isFastRegen) {
         super.heal(amount, regainReason, isFastRegen);
         updateDisplayName();
+    }
+
+    @Override
+    public Map<org.bukkit.entity.Player, Double> getDamagers() {
+        Map<org.bukkit.entity.Player, Double> damagers = new HashMap<>();
+
+        for (Map.Entry<Player, Double> entry : this.damages.entrySet()) {
+            damagers.put((org.bukkit.entity.Player) entry.getKey().getBukkitEntity(), entry.getValue());
+        }
+
+        return damagers;
     }
 }
