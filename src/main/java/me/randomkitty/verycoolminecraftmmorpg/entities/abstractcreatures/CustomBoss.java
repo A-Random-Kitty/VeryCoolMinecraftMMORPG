@@ -32,7 +32,6 @@ public interface CustomBoss extends CustomCreature {
 
             entry.getKey().sendMessage(Component.text("BOSS DOWN! ", NamedTextColor.DARK_RED, TextDecoration.BOLD).append(Component.text(getBaseName())));
 
-
             Location dropLocation = new Location(mob.level().getWorld(), mob.getX(), mob.getY(), mob.getZ());
 
             for (RareLootDrop rareDrop : getRareDrops()) {
@@ -53,7 +52,7 @@ public interface CustomBoss extends CustomCreature {
             ItemDropUtil.givePlayerCombatXpAndDrop(entry.getKey(), getBaseXpDrop(), mob);
         }
 
-        // Don't pass drops to EntityDeathEvent because we want to drop items in a custom way
+        // Don't pass custom drops to EntityDeathEvent because drops are done in a custom way
         EntityDeathEvent deathEvent = CraftEventFactory.callEntityDeathEvent(mob, damageSource, mob.drops, () -> {
             LivingEntity killer = mob.getKillCredit();
             if (killer != null) {

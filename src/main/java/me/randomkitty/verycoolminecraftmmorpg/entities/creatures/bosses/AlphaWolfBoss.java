@@ -26,7 +26,7 @@ public class AlphaWolfBoss extends CustomWolf implements CustomBoss {
 
         this.getAttributes().registerAttribute(Attributes.ATTACK_DAMAGE);
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(50);
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(400);
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000);
         this.setHealth(400);
 
         this.updateDisplayName();
