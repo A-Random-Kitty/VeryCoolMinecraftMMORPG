@@ -7,6 +7,7 @@ import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,8 +30,7 @@ public interface CustomBoss extends CustomCreature {
         Map<Player, Double> damagers = getDamagers();
 
         for (Map.Entry<Player, Double> entry : damagers.entrySet()) {
-
-            entry.getKey().sendMessage(Component.text("BOSS DOWN! ", NamedTextColor.DARK_RED, TextDecoration.BOLD).append(Component.text(getBaseName())));
+            entry.getKey().sendMessage(Component.text("BOSS DOWN! ", NamedTextColor.DARK_RED, TextDecoration.BOLD).append(LegacyComponentSerializer.legacySection().deserialize(this.getBaseName())));
 
             Location dropLocation = new Location(mob.level().getWorld(), mob.getX(), mob.getY(), mob.getZ());
 

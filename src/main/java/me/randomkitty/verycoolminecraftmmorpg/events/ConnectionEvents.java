@@ -8,6 +8,9 @@ import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
 import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.luckperms.api.cacheddata.CachedMetaData;
+import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,7 +34,15 @@ public class ConnectionEvents implements Listener {
         PlayerAttributes.initPlayer(player);
         PlayerAttributes.calculateAttributes(player);
 
-        event.joinMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text(" joined the game").color(NamedTextColor.GREEN)));
+        CachedMetaData rankData = VeryCoolMinecraftMMORPG.RANK_PROVIDER.getMetaData(player);
+        String prefix = rankData.getPrefix();
+
+        if (prefix != null) {
+            event.joinMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + player.getName()).append(Component.text(" joined the game", NamedTextColor.GREEN)));
+        } else {
+            event.joinMessage(Component.text(player.getName()).append(Component.text(" joined the game", NamedTextColor.GREEN)));
+        }
+
         player.setFallDistance(0);
         player.setFireTicks(0);
 
@@ -58,6 +69,13 @@ public class ConnectionEvents implements Listener {
         PlayerData.removePlayer(player);
         PlayerAttributes.removePlayer(player);
 
-        event.quitMessage(Component.text(player.getName()).color(NamedTextColor.AQUA).append(Component.text(" left the game").color(NamedTextColor.GREEN)));
+        CachedMetaData rankData = VeryCoolMinecraftMMORPG.RANK_PROVIDER.getMetaData(player);
+        String prefix = rankData.getPrefix();
+
+        if (prefix != null) {
+            event.quitMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + player.getName()).append(Component.text(" joined the game", NamedTextColor.GREEN)));
+        } else {
+            event.quitMessage(Component.text(player.getName()).append(Component.text(" joined the game", NamedTextColor.GREEN)));
+        }
     }
 }

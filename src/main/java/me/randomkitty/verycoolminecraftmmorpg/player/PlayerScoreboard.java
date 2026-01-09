@@ -18,6 +18,10 @@ public class PlayerScoreboard {
         Objective obj = board.registerNewObjective("kittyisle", Criteria.DUMMY, Component.text("Kitty Isle").color(NamedTextColor.DARK_AQUA));
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
+        Score blank1 = obj.getScore(" ");
+        blank1.setScore(3);
+        blank1.numberFormat(NumberFormat.blank());
+
         Team coinsteam = board.registerNewTeam("coinsteam");
         Score coinsscore = obj.getScore("Coins: ");
         coinsteam.addEntry("Coins: ");
@@ -25,9 +29,9 @@ public class PlayerScoreboard {
         coinsscore.setScore(2);
         coinsscore.numberFormat(NumberFormat.blank());
 
-        Score blank1 = obj.getScore(" ");
-        blank1.setScore(1);
-        blank1.numberFormat(NumberFormat.blank());
+        Score blank2 = obj.getScore("  ");
+        blank2.setScore(1);
+        blank2.numberFormat(NumberFormat.blank());
 
         Score ipscore = obj.getScore(ChatColor.AQUA + "kittyisle.minekeep.gg");
         ipscore.setScore(0);

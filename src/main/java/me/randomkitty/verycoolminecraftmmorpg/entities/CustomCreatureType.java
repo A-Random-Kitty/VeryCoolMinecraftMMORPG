@@ -4,6 +4,7 @@ import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomC
 import me.randomkitty.verycoolminecraftmmorpg.entities.creatures.GrassyRam;
 import me.randomkitty.verycoolminecraftmmorpg.entities.creatures.GrassySheep;
 import me.randomkitty.verycoolminecraftmmorpg.entities.creatures.ZombieCreature;
+import me.randomkitty.verycoolminecraftmmorpg.entities.creatures.bosses.AlphaWolfBoss;
 import net.minecraft.world.entity.PathfinderMob;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -14,10 +15,12 @@ public class CustomCreatureType<T extends PathfinderMob & CustomCreature> {
 
     public static final CustomCreatureType<GrassySheep> GRASSY_SHEEP = new CustomCreatureType<>(GrassySheep::new);
     public static final CustomCreatureType<GrassyRam> GRASSY_RAM = new CustomCreatureType<>(GrassyRam::new);
+    public static final CustomCreatureType<AlphaWolfBoss> ALPHA_WOLF = new CustomCreatureType<>(AlphaWolfBoss::new);
 
     private static final Map<String, CustomCreatureType<?>> stringToType = Map.ofEntries(
             Map.entry("grassy_sheep", GRASSY_SHEEP),
-            Map.entry("grassy_ram", GRASSY_RAM)
+            Map.entry("grassy_ram", GRASSY_RAM),
+            Map.entry("alpha_wolf", ALPHA_WOLF)
     );
 
     public static CustomCreatureType<?> fromString(String s) {

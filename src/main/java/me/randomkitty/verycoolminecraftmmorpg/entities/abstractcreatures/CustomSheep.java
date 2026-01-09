@@ -1,13 +1,18 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -61,41 +66,44 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
-        if (damageSource.eventEntityDamager() != null) {
-            if (damageSource.eventEntityDamager() instanceof Player player) {
-                if (damageTicks.containsKey(player)) {
-                    if (tickCount >= damageTicks.get(player) + 10) {
-                        this.hurtTime = 0;
-                    }
-                } else {
-                    this.hurtTime = 0;
-                }
-            } else {
-                this.hurtTime = 0;
-            }
+    public boolean customAttackByPlayer(ServerPlayer player, double damage, boolean crit) {
+        org.bukkit.entity.Player bukkitPlayer = player.getBukkitEntity();
+        Integer damageTick = damageTicks.get(player);
 
+        if ((damageTick != null && damageTick + 10 > tickCount) || this.isDeadOrDying()) {
+            return false;
         }
 
-        boolean idk = super.hurtServer(level, damageSource, amount);
+        DamageSource source = this.damageSources().playerAttack(player);
+
+        double kbMulti = (player.isSprinting() ? 2.0 : 1.0);
+        this.knockback(kbMulti * 0.5F, Mth.sin(player.getYRot() * ((float)Math.PI / 180F)), -Mth.cos(player.getYRot() * ((float)Math.PI / 180F)), player, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.ENTITY_ATTACK);
+
+        this.getBukkitLivingEntity().playHurtAnimation(player.getBukkitYaw());
+        if (crit) {
+            bukkitPlayer.playSound(bukkitPlayer.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.0f);
+        } else {
+            bukkitPlayer.playSound(bukkitPlayer.getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1.0f, 1.0f);
+        }
+        ;
+        handleDamageEvent(source);
+
+        this.setHealth(getHealth() - (float) damage);
+
+        if (this.isDeadOrDying() && !this.dead) {
+            this.die(source);
+        }
+
+        damageTicks.put(player, tickCount);
+        if (damages.containsKey(player)) {
+            damages.put(player, damages.get(player) + damage);
+        } else {
+            damages.put(player, damage);
+        }
+
         updateDisplayName();
-        return idk;
-    }
 
-    @Override
-    public boolean actuallyHurt(ServerLevel level, DamageSource damageSource, float amount, EntityDamageEvent event) {
-        boolean temp = super.actuallyHurt(level, damageSource, amount, event);
-        if (temp) {
-            if (damageSource.eventEntityDamager() instanceof Player player) {
-                damageTicks.put(player, tickCount);
-                if (damages.containsKey(player)) {
-                    damages.put(player, damages.get(player) + amount);
-                } else {
-                    damages.put(player, (double) amount);
-                }
-            }
-        }
-        return temp;
+        return true;
     }
 
     @Override
@@ -116,5 +124,9 @@ public abstract class CustomSheep extends Sheep implements CustomCreature {
         }
 
         return damagers;
+    }
+
+    public PathfinderMob getMob() {
+        return this;
     }
 }

@@ -5,6 +5,7 @@ import me.randomkitty.verycoolminecraftmmorpg.entities.RareLootDrop;
 import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -33,9 +34,7 @@ public interface CustomCreature {
         onPostSpawn();
     }
 
-    default void onPostSpawn() {
-
-    }
+    default void onPostSpawn() {}
 
     default EntityDeathEvent dropAllDeathLootCustom(ServerLevel level, DamageSource damageSource, PathfinderMob mob) {
         if (mob.getLastHurtByPlayer() != null) {
@@ -68,6 +67,8 @@ public interface CustomCreature {
         return deathEvent;
     }
 
+    boolean customAttackByPlayer(ServerPlayer player, double damage, boolean crit);
+
     double getBaseCoinDrop();
     double getBaseXpDrop();
     List<DefaultLootDrop> getDefaultDrops();
@@ -75,4 +76,6 @@ public interface CustomCreature {
     String getBaseName();
 
     Map<Player, Double> getDamagers();
+
+    PathfinderMob getMob();
 }

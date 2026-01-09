@@ -60,7 +60,9 @@ public class CreatureSpawner<T extends PathfinderMob & CustomCreature> {
 
             while (currentMobs < maxMobs && spawnedInCycle < mobsPerSpawn) {
                 T creature = type.spawnNewCreature(spawnLocation);
-                creature.setDeltaMovement(RandomUtil.randomDouble(-launchVelocity, launchVelocity), RandomUtil.randomDouble(1, 1.5), RandomUtil.randomDouble(-1, 1));
+                if (launchVelocity != 0) {
+                    creature.setDeltaMovement(RandomUtil.randomDouble(-launchVelocity, launchVelocity), RandomUtil.randomDouble(launchVelocity/2, launchVelocity), RandomUtil.randomDouble(-launchVelocity, launchVelocity));
+                }
                 spawnedCreatures.add(creature);
 
                 currentMobs++;
@@ -86,7 +88,7 @@ public class CreatureSpawner<T extends PathfinderMob & CustomCreature> {
         int maxMobs = configuration.getInt("max_mobs");
         int mobsPerSpawn = configuration.getInt("mobs_per_spawn");
         int spawnInterval = configuration.getInt("spawn_interval");
-        double launchVelocity = configuration.getDouble("spawn_interval");
+        double launchVelocity = configuration.getDouble("launch_velocity");
 
         if (type != null) {
             if (location != null) {

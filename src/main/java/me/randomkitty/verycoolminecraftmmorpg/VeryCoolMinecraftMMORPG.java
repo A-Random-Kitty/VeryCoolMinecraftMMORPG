@@ -8,10 +8,11 @@ import me.randomkitty.verycoolminecraftmmorpg.inventory.shop.Shops;
 import me.randomkitty.verycoolminecraftmmorpg.player.attributes.PlayerAttributes;
 import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
 import net.kyori.adventure.text.Component;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.platform.PlayerAdapter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,6 +26,7 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
     public static VeryCoolMinecraftMMORPG INSTANCE;
     public static Logger LOGGER;
     public static RpgConfig CONFIG;
+    public static PlayerAdapter<Player> RANK_PROVIDER;
 
     @Override
     public void onEnable() {
@@ -33,6 +35,7 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
         LOGGER = this.getLogger();
         this.saveResource("config.yml", false);
         CONFIG = new RpgConfig(new File(this.getDataFolder(), "config.yml"));
+        RANK_PROVIDER = LuckPermsProvider.get().getPlayerAdapter(Player.class);
 
         PluginManager manager = this.getServer().getPluginManager();
 
@@ -42,7 +45,7 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
         manager.registerEvents(new InteractEvents(), this);
         manager.registerEvents(new InventoryEvents(), this);
         manager.registerEvents(new PlayerEvents(), this);
-        manager.registerEvents(new CommandEvents(), this);
+        manager.registerEvents(new CommandAndChatEvents(), this);
 
         this.getCommand("shop").setExecutor(new ShopCommand());
         this.getCommand("openshop").setExecutor(new OpenShopForPlayerCommand());
