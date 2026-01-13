@@ -14,6 +14,8 @@ import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.luckperms.api.cacheddata.CachedMetaData;
 import net.minecraft.world.entity.monster.Zombie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,12 +38,12 @@ import java.util.List;
 public class DamageEvents implements Listener {
 
     private static final List<TextComponent> deathMessages = List.of(
-            Component.text(" died", NamedTextColor.RED),
-            Component.text(" had skill issue", NamedTextColor.RED),
-            Component.text(" touched grass", NamedTextColor.RED),
-            Component.text(" fell off", NamedTextColor.RED),
-            Component.text(" \"lagged\"", NamedTextColor.RED),
-            Component.text(" pressed alt f4", NamedTextColor.RED)
+            Component.text(" died", NamedTextColor.GRAY),
+            Component.text(" had skill issue", NamedTextColor.GRAY),
+            Component.text(" touched grass", NamedTextColor.GRAY),
+            Component.text(" fell off", NamedTextColor.GRAY),
+            Component.text(" \"lagged\"", NamedTextColor.GRAY),
+            Component.text(" pressed alt f4", NamedTextColor.GRAY)
     );
 
     @EventHandler
@@ -147,6 +149,7 @@ public class DamageEvents implements Listener {
     }
 
     private void onNaturalDamageCustomEntity(EntityDamageEvent event, CustomCreature creature) {
+        if (event.getCause() != EntityDamageEvent.DamageCause.KILL || event.getCause() != EntityDamageEvent.DamageCause.CUSTOM || event.getCause() != EntityDamageEvent.DamageCause.VOID)
         event.setCancelled(true);
     }
 
@@ -175,12 +178,21 @@ public class DamageEvents implements Listener {
         Player player = event.getPlayer();
 
         event.setCancelled(true);
+
         player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getValue());
         player.teleport(VeryCoolMinecraftMMORPG.CONFIG.getSpawnLocation());
         player.setFallDistance(0);
-        Bukkit.broadcast(player.displayName().append(deathMessages.get(RandomUtil.RANDOM.nextInt(deathMessages.size()))));
         player.setFireTicks(0);
         player.getActivePotionEffects().forEach(effect -> {player.removePotionEffect(effect.getType());});
+
+        CachedMetaData rankData = VeryCoolMinecraftMMORPG.RANK_PROVIDER.getMetaData(player);
+        String prefix = rankData.getPrefix();
+
+        if (prefix != null) {
+            Bukkit.broadcast(player.displayName().append(deathMessages.get(RandomUtil.RANDOM.nextInt(deathMessages.size()))).append(Component.text(" ☠", NamedTextColor.DARK_RED)));
+        } else {
+            Bukkit.broadcast(player.displayName().append(deathMessages.get(RandomUtil.RANDOM.nextInt(deathMessages.size()))).append(Component.text(" ☠", NamedTextColor.DARK_RED)));
+        }
     }
 
 }

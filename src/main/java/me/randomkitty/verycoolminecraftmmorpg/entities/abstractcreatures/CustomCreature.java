@@ -1,5 +1,6 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
+import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import me.randomkitty.verycoolminecraftmmorpg.entities.DefaultLootDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.RareLootDrop;
 import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
@@ -36,9 +37,10 @@ public interface CustomCreature {
 
     default void onPostSpawn() {}
 
-    default EntityDeathEvent dropAllDeathLootCustom(ServerLevel level, DamageSource damageSource, PathfinderMob mob) {
-        if (mob.getLastHurtByPlayer() != null) {
-            Player player = (Player) mob.getLastHurtByPlayer().getBukkitEntity();
+    default EntityDeathEvent dropAllDeathLootCustom(ServerLevel level, DamageSource damageSource, PathfinderMob mob) {;
+
+        if (damageSource.getEntity() instanceof net.minecraft.world.entity.player.Player p) {
+            Player player = (Player) p.getBukkitEntity();
             Location dropLocation = new Location(mob.level().getWorld(), mob.getX(), mob.getY(), mob.getZ());
 
             for (RareLootDrop rareDrop : getRareDrops()) {

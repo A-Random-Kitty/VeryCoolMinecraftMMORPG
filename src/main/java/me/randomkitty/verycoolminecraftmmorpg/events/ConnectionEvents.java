@@ -37,10 +37,12 @@ public class ConnectionEvents implements Listener {
         CachedMetaData rankData = VeryCoolMinecraftMMORPG.RANK_PROVIDER.getMetaData(player);
         String prefix = rankData.getPrefix();
 
+        player.displayName(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + player.getName()));
+
         if (prefix != null) {
-            event.joinMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + player.getName()).append(Component.text(" joined the game", NamedTextColor.GREEN)));
+            event.joinMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + player.getName()).append(Component.text(" joined the game", NamedTextColor.GRAY)));
         } else {
-            event.joinMessage(Component.text(player.getName()).append(Component.text(" joined the game", NamedTextColor.GREEN)));
+            event.joinMessage(Component.text(player.getName()).append(Component.text(" joined the game", NamedTextColor.GRAY)));
         }
 
         player.setFallDistance(0);
@@ -73,9 +75,9 @@ public class ConnectionEvents implements Listener {
         String prefix = rankData.getPrefix();
 
         if (prefix != null) {
-            event.quitMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + player.getName()).append(Component.text(" joined the game", NamedTextColor.GREEN)));
+            event.quitMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + player.getName()).append(Component.text(" left the game", NamedTextColor.GRAY)));
         } else {
-            event.quitMessage(Component.text(player.getName()).append(Component.text(" joined the game", NamedTextColor.GREEN)));
+            event.quitMessage(Component.text(player.getName()).append(Component.text(" left the game", NamedTextColor.GRAY)));
         }
     }
 }

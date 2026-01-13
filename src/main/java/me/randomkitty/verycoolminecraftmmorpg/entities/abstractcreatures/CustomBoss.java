@@ -5,6 +5,7 @@ import me.randomkitty.verycoolminecraftmmorpg.entities.DefaultLootDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.RareLootDrop;
 import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -29,27 +30,32 @@ public interface CustomBoss extends CustomCreature {
     default EntityDeathEvent dropAllDeathLootCustom(ServerLevel level, DamageSource damageSource, PathfinderMob mob) {
         Map<Player, Double> damagers = getDamagers();
 
+        TextComponent nameComponent = LegacyComponentSerializer.legacySection().deserialize(this.getBaseName());
+        TextComponent bossDownComponent = Component.text("BOSS DOWN! ", NamedTextColor.DARK_RED, TextDecoration.BOLD).append(nameComponent.decoration(TextDecoration.BOLD, false));
+
+
         for (Map.Entry<Player, Double> entry : damagers.entrySet()) {
-            entry.getKey().sendMessage(Component.text("BOSS DOWN! ", NamedTextColor.DARK_RED, TextDecoration.BOLD).append(LegacyComponentSerializer.legacySection().deserialize(this.getBaseName())));
+            Player player = entry.getKey();
+            player.sendMessage(bossDownComponent);
 
             Location dropLocation = new Location(mob.level().getWorld(), mob.getX(), mob.getY(), mob.getZ());
 
             for (RareLootDrop rareDrop : getRareDrops()) {
                 if (rareDrop.shouldDrop()) {
-                    ItemDropUtil.givePlayerLootOrDrop(entry.getKey(), rareDrop.getItem(), dropLocation);
+                    ItemDropUtil.givePlayerLootOrDrop(player, rareDrop.getItem(), dropLocation);
 
                     if (rareDrop.shouldTellPlayer()) {
-                        entry.getKey().sendMessage(rareDrop.getMessage());
+                        player.sendMessage(rareDrop.getMessage());
                     }
                 }
             }
 
             for (DefaultLootDrop defaultDrop : getDefaultDrops()) {
-                ItemDropUtil.givePlayerLootOrDrop(entry.getKey(), defaultDrop.getDrop(), dropLocation);
+                ItemDropUtil.givePlayerLootOrDrop(player, defaultDrop.getDrop(), dropLocation);
             }
 
-            ItemDropUtil.givePlayerCoinsAndDrop(entry.getKey(), getBaseCoinDrop(), mob);
-            ItemDropUtil.givePlayerCombatXpAndDrop(entry.getKey(), getBaseXpDrop(), mob);
+            ItemDropUtil.givePlayerCoinsAndDrop(player, getBaseCoinDrop(), mob);
+            ItemDropUtil.givePlayerCombatXpAndDrop(player, getBaseXpDrop(), mob);
         }
 
         // Don't pass custom drops to EntityDeathEvent because drops are done in a custom way

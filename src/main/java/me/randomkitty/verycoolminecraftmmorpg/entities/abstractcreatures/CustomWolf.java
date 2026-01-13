@@ -16,6 +16,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,44 +51,49 @@ public abstract class CustomWolf extends Wolf implements CustomCreature {
     }
 
     @Override
-    protected EntityDeathEvent dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
+    protected @NotNull EntityDeathEvent dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
         return dropAllDeathLootCustom(level, damageSource, this);
     }
 
     @Override
     public boolean customAttackByPlayer(ServerPlayer player, double damage, boolean crit) {
-        Player bukkitPlayer = player.getBukkitEntity();
+        org.bukkit.entity.Player bukkitPlayer = player.getBukkitEntity();
         Integer damageTick = damageTicks.get(player);
 
         if ((damageTick != null && damageTick + 10 > tickCount) || this.isDeadOrDying()) {
             return false;
         }
 
-        DamageSource source = this.damageSources().playerAttack(player);
+        damageTicks.put(player, tickCount);
 
-        double kbMulti = (player.isSprinting() ? 2.0 : 1.0);
-        this.knockback(kbMulti * 0.5F, Mth.sin(player.getYRot() * ((float)Math.PI / 180F)), -Mth.cos(player.getYRot() * ((float)Math.PI / 180F)), player, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.ENTITY_ATTACK);
+        DamageSource source = player.damageSources().playerAttack(player);
 
-        this.getBukkitLivingEntity().playHurtAnimation(player.getBukkitYaw());
-        if (crit) {
-            bukkitPlayer.playSound(bukkitPlayer.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.0f);
-        } else {
-            bukkitPlayer.playSound(bukkitPlayer.getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1.0f, 1.0f);
+        {
+            double kbMulti = (player.isSprinting() ? 2.0 : 1.0);
+            this.knockback(kbMulti * 0.5F, Mth.sin(player.getYRot() * ((float) Math.PI / 180F)), -Mth.cos(player.getYRot() * ((float) Math.PI / 180F)), player, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.ENTITY_ATTACK);
+
+            this.getBukkitLivingEntity().playHurtAnimation(player.getBukkitYaw());
+            if (crit) {
+                bukkitPlayer.getWorld().playSound(bukkitPlayer.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.0f);
+            } else {
+                bukkitPlayer.getWorld().playSound(bukkitPlayer.getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1.0f, 1.0f);
+            }
+
+            handleDamageEvent(source);
         }
-;
-        handleDamageEvent(source);
+
+        {
+            if (damages.containsKey(player)) {
+                damages.put(player, damages.get(player) + damage);
+            } else {
+                damages.put(player, damage);
+            }
+        }
 
         this.setHealth(getHealth() - (float) damage);
 
         if (this.isDeadOrDying() && !this.dead) {
             this.die(source);
-        }
-
-        damageTicks.put(player, tickCount);
-        if (damages.containsKey(player)) {
-            damages.put(player, damages.get(player) + damage);
-        } else {
-            damages.put(player, damage);
         }
 
         updateDisplayName();

@@ -25,7 +25,7 @@ public class GrassyRam extends CustomSheep {
 
     private static final DefaultLootDrop muttonDrop = new DefaultLootDrop(1, 3, CustomItems.MUTTON);
     private static final DefaultLootDrop grassyWoolDrop = new DefaultLootDrop(1, 2, CustomItems.GRASSY_WOOL);
-    private static final RareLootDrop ramHornFragDrop = new RareLootDrop(0.05f, CustomItems.RAM_HORN_FRAGMENT);
+    private static final RareLootDrop ramHornFragDrop = new RareLootDrop(1/15f, CustomItems.RAM_HORN_FRAGMENT);
 
     static {
         defaultDrops.add(muttonDrop);
@@ -40,7 +40,7 @@ public class GrassyRam extends CustomSheep {
 
         this.setColor(DyeColor.GREEN);
         this.getAttributes().registerAttribute(Attributes.ATTACK_DAMAGE);
-        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(12);
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(7.5);
         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(50);
         this.setHealth(50);
 
