@@ -59,7 +59,6 @@ public class PlayerData {
         }
     }
 
-
     private final UUID uuid;
 
     private final File dataFile;

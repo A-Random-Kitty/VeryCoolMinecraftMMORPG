@@ -25,8 +25,6 @@ import java.util.Set;
 
 public interface CustomBoss extends CustomCreature {
 
-
-
     default EntityDeathEvent dropAllDeathLootCustom(ServerLevel level, DamageSource damageSource, PathfinderMob mob) {
         Map<Player, Double> damagers = getDamagers();
 

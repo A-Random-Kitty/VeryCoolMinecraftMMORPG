@@ -27,8 +27,10 @@ public class CustomItems {
     public static final CustomItem MUTTON;
     public static final CustomItem GRASSY_WOOL;
     public static final CustomItem RAM_HORN_FRAGMENT;
+
     public static final CustomItem WOLF_PELT;
     public static final CustomItem WOLF_TOOTH;
+    public static final CustomItem ALPHA_WOLF_PELT;
 
     public static final ModifiableItem SHARP_STICK;
     public static final ModifiableItem BLADE_OF_GRASS;
@@ -48,6 +50,11 @@ public class CustomItems {
     public static final ModifiableItem WOLF_PELT_CHESTPLATE;
     public static final ModifiableItem WOLF_PELT_LEGGINGS;
     public static final ModifiableItem WOLF_PELT_BOOTS;
+
+    public static final ModifiableItem ALPHA_WOLF_PELT_HELMET;
+    public static final ModifiableItem ALPHA_WOLF_PELT_CHESTPLATE;
+    public static final ModifiableItem ALPHA_WOLF_PELT_LEGGINGS;
+    public static final ModifiableItem ALPHA_WOLF_PELT_BOOTS;
 
     public static final EnchantedBookItem ENCHANTED_BOOK;
 
@@ -82,8 +89,9 @@ public class CustomItems {
         MUTTON = register(new CustomItem(new CustomItemBuilder("mutton").setType(ItemType.MATERIAL).setRarity(Rarity.COMMON).setMaterial(Material.MUTTON).setName("Mutton")));
         GRASSY_WOOL = register(new CustomItem(new CustomItemBuilder("grassy_wool").setType(ItemType.MATERIAL).setRarity(Rarity.COMMON).setMaterial(Material.LIME_WOOL).setName("Grassy Wool")));
         RAM_HORN_FRAGMENT = register(new CustomItem(new CustomItemBuilder("ram_horn_fragment").setType(ItemType.MATERIAL).setRarity(Rarity.UNCOMMON).setMaterial(Material.STONE_BUTTON).setName("Ram Horn Fragment")));
-        WOLF_PELT = register(new CustomItem(new CustomItemBuilder("wolf_pelt").setType(ItemType.MATERIAL).setRarity(Rarity.COMMON).setMaterial(Material.LEATHER).setName("Wolf Pelt")));
+        WOLF_PELT = register(new CustomItem(new CustomItemBuilder("wolf_pelt").setType(ItemType.MATERIAL).setRarity(Rarity.COMMON).setMaterial(Material.LIGHT_GRAY_WOOL).setName("Wolf Pelt")));
         WOLF_TOOTH = register(new CustomItem(new CustomItemBuilder("wolf_tooth").setType(ItemType.MATERIAL).setRarity(Rarity.UNCOMMON).setMaterial(Material.GHAST_TEAR).setName("Wolf Tooth")));
+        ALPHA_WOLF_PELT = register(new CustomItem(new CustomItemBuilder("alpha_wolf_pelt").setType(ItemType.MATERIAL).setRarity(Rarity.COMMON).setMaterial(Material.GRAY_WOOL).setName("Alpha Wolf Pelt")));
 
         SHARP_STICK = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("sharp_stick").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.COMMON).setMaterial(Material.STICK).setMaxStackSize(1).setDamage(10).setName("Sharp Stick")));
         BLADE_OF_GRASS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("blade_of_grass").setType(ItemType.SWORD).setSlot(EquipmentSlot.HAND).setRarity(Rarity.UNCOMMON).setMaterial(Material.BAMBOO).setMaxStackSize(1).setDamage(15).setName("Blade of Grass")));
@@ -100,9 +108,14 @@ public class CustomItems {
         GRASSY_BOOTS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("grassy_boots").setType(ItemType.BOOTS).setSlot(EquipmentSlot.FEET).setRarity(Rarity.UNCOMMON).setMaterial(Material.LEATHER_BOOTS).setColor(Color.LIME).setMaxStackSize(1).setDefense(6).setHealth(5).setName("Grassy Boots")));
 
         WOLF_PELT_HELMET = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("wolf_pelt_helmet").setType(ItemType.HELMET).setSlot(EquipmentSlot.HEAD).setRarity(Rarity.COMMON).setMaterial(Material.LEATHER_HELMET).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setName("Wolf Pelt Helmet")));
-        WOLF_PELT_LEGGINGS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("wolf_pelt_chestplate").setType(ItemType.CHESTPLATE).setSlot(EquipmentSlot.HEAD).setRarity(Rarity.COMMON).setMaterial(Material.LEATHER_CHESTPLATE).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setName("Wolf Pelt Helmet")));
-        WOLF_PELT_CHESTPLATE = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("wolf_pelt_leggings").setType(ItemType.LEGGINGS).setSlot(EquipmentSlot.HEAD).setRarity(Rarity.COMMON).setMaterial(Material.LEATHER_LEGGINGS).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setName("Wolf Pelt Helmet")));
-        WOLF_PELT_BOOTS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("wolf_pelt_helmet").setType(ItemType.BOOTS).setSlot(EquipmentSlot.HEAD).setRarity(Rarity.COMMON).setMaterial(Material.LEATHER_BOOTS).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setName("Wolf Pelt Helmet")));
+        WOLF_PELT_LEGGINGS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("wolf_pelt_chestplate").setType(ItemType.CHESTPLATE).setSlot(EquipmentSlot.CHEST).setRarity(Rarity.COMMON).setMaterial(Material.LEATHER_CHESTPLATE).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setName("Wolf Pelt Chestplate")));
+        WOLF_PELT_CHESTPLATE = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("wolf_pelt_leggings").setType(ItemType.LEGGINGS).setSlot(EquipmentSlot.LEGS).setRarity(Rarity.COMMON).setMaterial(Material.LEATHER_LEGGINGS).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setName("Wolf Pelt Leggings")));
+        WOLF_PELT_BOOTS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("wolf_pelt_boots").setType(ItemType.BOOTS).setSlot(EquipmentSlot.FEET).setRarity(Rarity.COMMON).setMaterial(Material.LEATHER_BOOTS).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setName("Wolf Pelt Boots")));
+
+        ALPHA_WOLF_PELT_HELMET = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("alpha_wolf_pelt_helmet").setType(ItemType.HELMET).setSlot(EquipmentSlot.HEAD).setRarity(Rarity.UNCOMMON).setMaterial(Material.LEATHER_HELMET).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setCriticalDamage(5).setName("Wolf Pelt Helmet")));
+        ALPHA_WOLF_PELT_LEGGINGS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("alpha_wolf_pelt_chestplate").setType(ItemType.CHESTPLATE).setSlot(EquipmentSlot.CHEST).setRarity(Rarity.UNCOMMON).setMaterial(Material.LEATHER_CHESTPLATE).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setCriticalDamage(5).setName("Wolf Pelt Chestplate")));
+        ALPHA_WOLF_PELT_CHESTPLATE = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("alpha_wolf_pelt_leggings").setType(ItemType.LEGGINGS).setSlot(EquipmentSlot.LEGS).setRarity(Rarity.UNCOMMON).setMaterial(Material.LEATHER_LEGGINGS).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setCriticalDamage(5).setName("Wolf Pelt Leggings")));
+        ALPHA_WOLF_PELT_BOOTS = (ModifiableItem) register(new ModifiableItem(new CustomItemBuilder("alpha_wolf_pelt_boots").setType(ItemType.BOOTS).setSlot(EquipmentSlot.FEET).setRarity(Rarity.UNCOMMON).setMaterial(Material.LEATHER_BOOTS).setColor(Color.GRAY).setMaxStackSize(1).setDefense(12).setHealth(15).setCriticalDamage(5).setName("Wolf Pelt Boots")));
 
         ENCHANTED_BOOK = (EnchantedBookItem) register(new EnchantedBookItem(new CustomItemBuilder("enchanted_book").setType(ItemType.ITEM).setRarity(Rarity.RARE).setMaterial(Material.ENCHANTED_BOOK).setMaxStackSize(1).setName("Enchanted Book")));
     }
