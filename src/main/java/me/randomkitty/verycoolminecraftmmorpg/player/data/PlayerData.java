@@ -1,5 +1,6 @@
 package me.randomkitty.verycoolminecraftmmorpg.player.data;
 
+import com.google.common.collect.ImmutableList;
 import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import me.randomkitty.verycoolminecraftmmorpg.player.PlayerCurrency;
 import me.randomkitty.verycoolminecraftmmorpg.skills.combat.CombatSkill;
@@ -64,7 +65,7 @@ public class PlayerData {
     private final File dataFile;
     private final YamlConfiguration data;
 
-    private final Set<PlayerDataValue> dataValues = new HashSet<>();
+    private final List<PlayerDataValue> dataValues = new ArrayList<>();
 
     private PlayerData (Player player) {
         this.uuid = player.getUniqueId();
@@ -108,5 +109,9 @@ public class PlayerData {
         } catch (IOException e) {
             VeryCoolMinecraftMMORPG.LOGGER.severe("Failed to save data for player with uuid: " + uuid);
         }
+    }
+
+    public List<PlayerDataValue> getDataValues() {
+        return this.dataValues;
     }
 }

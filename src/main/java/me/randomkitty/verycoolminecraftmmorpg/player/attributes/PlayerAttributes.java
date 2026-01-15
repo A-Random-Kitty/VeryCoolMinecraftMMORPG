@@ -5,6 +5,8 @@ import me.randomkitty.verycoolminecraftmmorpg.item.CustomItem;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItemInstance;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import me.randomkitty.verycoolminecraftmmorpg.item.modifier.ItemModifierInstance;
+import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
+import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerDataValue;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -154,6 +156,11 @@ public class PlayerAttributes {
 
         for (CustomItemInstance gearItem : gear) {
             gearItem.applyItemMultipliers(this);
+        }
+
+        PlayerData customPlayerData = PlayerData.getAttributes(player);
+        if (PlayerDataValue value : customPlayerData.getDataValues()) {
+
         }
 
         if (currentMana > mana)
