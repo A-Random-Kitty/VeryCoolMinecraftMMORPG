@@ -5,6 +5,7 @@ import me.randomkitty.verycoolminecraftmmorpg.item.CustomItem;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItemInstance;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import me.randomkitty.verycoolminecraftmmorpg.item.modifier.ItemModifierInstance;
+import me.randomkitty.verycoolminecraftmmorpg.player.data.AttributeModifyingPlayerDataValue;
 import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerData;
 import me.randomkitty.verycoolminecraftmmorpg.player.data.PlayerDataValue;
 import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
@@ -118,26 +119,34 @@ public class PlayerAttributes {
         damage = 0; // 🗡
         critChance = 15; // ☠
         critDamage = 30; // ⚔
-
+        PlayerData customPlayerData = PlayerData.getAttributes(player);
         final List<CustomItemInstance> gear = new ArrayList<>();
 
-        if (mainHandItemStack != null) {
-            mainHandItem = CustomItems.fromItemStack(mainHandItemStack);
+        {
+            if (mainHandItemStack != null) {
+                mainHandItem = CustomItems.fromItemStack(mainHandItemStack);
 
-            if (mainHandItem != null && mainHandItem.baseItem.getSlot() == EquipmentSlot.HAND) {
-                gear.add(mainHandItem);
-                mainHandItem.addAttributes(this);
+                if (mainHandItem != null && mainHandItem.baseItem.getSlot() == EquipmentSlot.HAND) {
+                    gear.add(mainHandItem);
+                    mainHandItem.addAttributes(this);
+                }
+
             }
 
-        }
+            for (ItemStack armorItem : armorContents) {
+                if (armorItem != null) {
+                    CustomItemInstance customArmorItem = CustomItems.fromItemStack(armorItem);
 
-        for (ItemStack armorItem : armorContents) {
-            if (armorItem != null) {
-                CustomItemInstance customArmorItem  = CustomItems.fromItemStack(armorItem);
+                    if (customArmorItem != null) {
+                        customArmorItem.addAttributes(this);
+                        gear.add(customArmorItem);
+                    }
+                }
+            }
 
-                if (customArmorItem != null) {
-                    customArmorItem.addAttributes(this);
-                    gear.add(customArmorItem);
+            for (PlayerDataValue value : customPlayerData.getDataValues()) {
+                if (value instanceof AttributeModifyingPlayerDataValue attributeModifyingPlayerDataValue) {
+                    attributeModifyingPlayerDataValue.applyAdditiveAttributes(this);
                 }
             }
         }
@@ -158,9 +167,11 @@ public class PlayerAttributes {
             gearItem.applyItemMultipliers(this);
         }
 
-        PlayerData customPlayerData = PlayerData.getAttributes(player);
-        if (PlayerDataValue value : customPlayerData.getDataValues()) {
 
+        for (PlayerDataValue value : customPlayerData.getDataValues()) {
+            if (value instanceof AttributeModifyingPlayerDataValue attributeModifyingPlayerDataValue) {
+                attributeModifyingPlayerDataValue.applyMultiplicativeAttributes(this);
+            }
         }
 
         if (currentMana > mana)
