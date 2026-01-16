@@ -22,7 +22,7 @@ public class PackWolf extends CustomWolf {
     private static final List<RareLootDrop> rareDrops = new ArrayList<>();
 
     private static final DefaultLootDrop wolfPeltDrop = new DefaultLootDrop(1, 2, CustomItems.WOLF_PELT);
-    private static final RareLootDrop wolfToothDrop = new RareLootDrop(0.2f, CustomItems.RAM_HORN_FRAGMENT);
+    private static final RareLootDrop wolfToothDrop = new RareLootDrop(0.2f, CustomItems.WOLF_TOOTH);
 
     static {
         defaultDrops.add(wolfPeltDrop);
@@ -53,7 +53,7 @@ public class PackWolf extends CustomWolf {
         goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.25f, false));
         goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1F));
         goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.stayCloseToOrginGoal = new StayCloseToOrginGoal(this, 10);
+        this.stayCloseToOrginGoal = new StayCloseToOrginGoal(this, 15);
         goalSelector.addGoal(5, stayCloseToOrginGoal);
 
         targetSelector.addGoal(0, new NearestAttackableTargetGoal<>(this, Player.class, true));
