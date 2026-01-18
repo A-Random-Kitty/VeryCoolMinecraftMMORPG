@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class Skill extends PlayerDataValue {
-
     private static final int BASE_XP_REQ = 100;
 
     protected int level;
