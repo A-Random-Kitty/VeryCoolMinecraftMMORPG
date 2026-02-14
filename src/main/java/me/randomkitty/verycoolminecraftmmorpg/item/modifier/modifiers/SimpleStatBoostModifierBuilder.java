@@ -5,15 +5,22 @@ import me.randomkitty.verycoolminecraftmmorpg.item.CustomItemBuilder;
 public class SimpleStatBoostModifierBuilder {
 
     public double damage = 0;
+    public double damageMulti = 0;
     public double criticalDamage = 0;
     public double criticalChance = 0;
 
     public double health = 0;
     public double defense = 0;
     public double mana = 0;
+    public double speed = 0;
 
     public SimpleStatBoostModifierBuilder setDamage(double damage) {
         this.damage = damage;
+        return this;
+    }
+
+    public SimpleStatBoostModifierBuilder setDamageMulti(double damageMulti) {
+        this.damageMulti = damageMulti;
         return this;
     }
 
@@ -42,4 +49,8 @@ public class SimpleStatBoostModifierBuilder {
         return this;
     }
 
+    public SimpleStatBoostModifierBuilder setSpeed(double speed) {
+        this.speed = speed;
+        return this;
+    }
 }

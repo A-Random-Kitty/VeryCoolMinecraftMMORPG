@@ -24,12 +24,14 @@ public class CustomItemBuilder {
     public List<String> lore = new ArrayList<>();
 
     public double damage = 0;
+    public double damageMulti = 0;
     public double criticalDamage = 0;
     public double criticalChance = 0;
 
     public double health = 0;
     public double defense = 0;
     public double mana = 0;
+    public double speed = 0;
 
     public CustomItemBuilder(String key) {
         this.key = key;
@@ -85,6 +87,11 @@ public class CustomItemBuilder {
         return this;
     }
 
+    public CustomItemBuilder setDamageMulti(double damageMulti) {
+        this.damageMulti = damageMulti;
+        return this;
+    }
+
     public CustomItemBuilder setCriticalDamage(double criticalDamage) {
         this.criticalDamage = criticalDamage;
         return this;
@@ -107,6 +114,11 @@ public class CustomItemBuilder {
 
     public CustomItemBuilder setMana(double mana) {
         this.mana = mana;
+        return this;
+    }
+
+    public CustomItemBuilder setSpeed(double speed) {
+        this.speed = speed;
         return this;
     }
 }

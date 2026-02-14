@@ -68,7 +68,7 @@ public class CreatureSpawners {
                     spawner.spawnMobsWithInterval();
                 }
             }
-        }, 200, 200);
+        }, 20, 20);
     }
 
     public static void stopSpawnMobsTask() {

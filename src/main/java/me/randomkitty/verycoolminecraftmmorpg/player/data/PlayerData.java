@@ -2,8 +2,10 @@ package me.randomkitty.verycoolminecraftmmorpg.player.data;
 
 import com.google.common.collect.ImmutableList;
 import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
+import me.randomkitty.verycoolminecraftmmorpg.player.PlayerAccomplishments;
 import me.randomkitty.verycoolminecraftmmorpg.player.PlayerCurrency;
 import me.randomkitty.verycoolminecraftmmorpg.skills.combat.CombatSkill;
+import me.randomkitty.verycoolminecraftmmorpg.skills.gathering.FarmingSkill;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -90,7 +92,9 @@ public class PlayerData {
         {
             // Add Data Values
             dataValues.add(new PlayerCurrency(player));
+            dataValues.add(new PlayerAccomplishments(player));
             dataValues.add(new CombatSkill(player));
+            dataValues.add(new FarmingSkill(player));
         }
 
         for (PlayerDataValue value : dataValues) {

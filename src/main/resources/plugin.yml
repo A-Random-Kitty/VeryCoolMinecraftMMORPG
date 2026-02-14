@@ -13,3 +13,4 @@ commands:
   givebook:
   loadspawners:
   loadconfig:
+  conditionaltp:

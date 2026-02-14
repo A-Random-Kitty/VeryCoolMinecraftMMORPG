@@ -1,6 +1,7 @@
 package me.randomkitty.verycoolminecraftmmorpg.inventory.shop;
 
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItem;
+import me.randomkitty.verycoolminecraftmmorpg.item.CustomItemInstance;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
 import me.randomkitty.verycoolminecraftmmorpg.player.PlayerCurrency;
 import me.randomkitty.verycoolminecraftmmorpg.player.PlayerScoreboard;
@@ -31,13 +32,15 @@ public class ShopEntry implements ConfigurationSerializable {
 
     private Map<CustomItem, Integer> itemsCost;
     private double coinsCost;
+    private CustomItem baseItem;
 
-    public ShopEntry(CustomItem item, int amount, Map<CustomItem, Integer> itemsCost, double coinsCost, String key) {
+    public ShopEntry(CustomItem item, int amount, Map<CustomItem, Integer> itemsCost, double coinsCost, CustomItem baseItem, String key) {
         this.key = key;
         this.item = item;
         this.amount = amount;
         this.itemsCost = itemsCost;
         this.coinsCost = coinsCost;
+        this.baseItem = baseItem;
     }
 
     public ItemStack getGuiItem() {
@@ -54,6 +57,10 @@ public class ShopEntry implements ConfigurationSerializable {
 
         if (coinsCost > 0) {
             lore.add(Component.text(String.format("  %,1.0f", coinsCost) + " Coins").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
+        }
+
+        if (baseItem != null) {
+            lore.add(Component.text("  ").append(baseItem.getColoredName()));
         }
 
         for (Map.Entry<CustomItem, Integer> entry : itemsCost.entrySet()) {
@@ -103,17 +110,29 @@ public class ShopEntry implements ConfigurationSerializable {
 
         boolean canAfford = true;
 
-        for (Map.Entry<CustomItem, Integer> entry : itemsCost.entrySet()) {
-            if (availableItems.containsKey(entry.getKey())) {
-                if (!(availableItems.get(entry.getKey()) >= entry.getValue())) {
+        if (availableItems.containsKey(baseItem)) {
+            int amountOf = availableItems.get(baseItem);
+            if (!(amountOf >= 1)) {
+                availableItems.put(baseItem, amountOf - 1);
+                canAfford = false;
+            }
+        }
+
+        if (canAfford) {
+            for (Map.Entry<CustomItem, Integer> entry : itemsCost.entrySet()) {
+                if (availableItems.containsKey(entry.getKey())) {
+                    if (!(availableItems.get(entry.getKey()) >= entry.getValue())) {
+                        canAfford = false;
+                        break;
+                    }
+                } else {
                     canAfford = false;
                     break;
                 }
-            } else {
-                canAfford = false;
-                break;
             }
         }
+
+        // IMPORTANT: make base item be spent and modifiers be added
 
         if (canAfford) {
             currency.spendCoins(coinsCost);
@@ -149,9 +168,28 @@ public class ShopEntry implements ConfigurationSerializable {
 
             }
 
-            ItemStack newItem = item.newItemStack();
-            newItem.setAmount(amount);
-            player.give(newItem);
+            if (baseItem != null) {
+                for (int i = 0; i < contents.length; i++) {
+                    if (slotItemType.get(i) == baseItem) {
+                        ItemStack baseItemStack = player.getInventory().getItem(i);
+                        if (baseItemStack != null) {
+                            CustomItemInstance baseItemInstance = CustomItems.fromItemStack(baseItemStack);
+                            if (baseItemInstance != null) {
+                                baseItemInstance.baseItem = item;
+                                player.getInventory().setItem(i, baseItemInstance.toItemStack());
+                            } else {
+                                throw new RuntimeException("Very big scary shop error (should not happen very bad)");
+                            }
+                        } else {
+                            throw new RuntimeException("Very big scary shop error (should not happen very bad)");
+                        }
+                    }
+                }
+            } else {
+                ItemStack newItem = item.newItemStack();
+                newItem.setAmount(amount);
+                player.give(newItem);
+            }
 
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1f, 1f);
         } else {
@@ -172,6 +210,7 @@ public class ShopEntry implements ConfigurationSerializable {
         serializedData.put("reward.amount", item.getKey());
 
         serializedData.put("cost.coins", coinsCost);
+        serializedData.put("cost.baseItem", baseItem);
 
         for (Map.Entry<CustomItem, Integer> entry : itemsCost.entrySet()) {
             serializedData.put("cost.item." + entry.getKey().getKey(), entry.getValue());
@@ -201,6 +240,10 @@ public class ShopEntry implements ConfigurationSerializable {
 
         double coinsCost = section.getDouble("cost.coins");
 
-        return new ShopEntry(item, amount, itemsCost, coinsCost, key);
+        String baseItemName = section.getString("cost.baseItem");
+        CustomItem baseItem = CustomItems.get(baseItemName);
+
+
+        return new ShopEntry(item, amount, itemsCost, coinsCost, baseItem, key);
     }
 }

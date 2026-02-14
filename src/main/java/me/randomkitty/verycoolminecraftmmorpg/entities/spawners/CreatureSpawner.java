@@ -4,6 +4,7 @@ package me.randomkitty.verycoolminecraftmmorpg.entities.spawners;
 import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomCreatureType;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomCreature;
+import me.randomkitty.verycoolminecraftmmorpg.entities.creatures.PackWolf;
 import me.randomkitty.verycoolminecraftmmorpg.util.RandomUtil;
 import net.minecraft.server.rcon.thread.RconClient;
 import net.minecraft.world.entity.Entity;
@@ -45,10 +46,14 @@ public class CreatureSpawner<T extends PathfinderMob & CustomCreature> {
     public void spawnMobsWithInterval() {
         interval++;
 
-        if (interval == spawnInterval) {
+        if (spawnLocation.isChunkLoaded() && interval >= spawnInterval) {
             interval = 0;
             spawnMobs();
         }
+    }
+
+    public boolean canAttemptSpawn() {
+        return spawnLocation.isChunkLoaded();
     }
 
     public void spawnMobs() {

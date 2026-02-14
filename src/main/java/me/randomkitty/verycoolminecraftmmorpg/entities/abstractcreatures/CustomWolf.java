@@ -41,7 +41,6 @@ public abstract class CustomWolf extends Wolf implements CustomCreature {
     }
 
 
-
     public void spawn(Location location) {
         this.spawn(location, this);
     }
@@ -50,55 +49,15 @@ public abstract class CustomWolf extends Wolf implements CustomCreature {
         updateDisplayName(this);
     }
 
+
     @Override
-    protected @NotNull EntityDeathEvent dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
+    protected EntityDeathEvent dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
         return dropAllDeathLootCustom(level, damageSource, this);
     }
 
     @Override
     public boolean customAttackByPlayer(ServerPlayer player, double damage, boolean crit) {
-        org.bukkit.entity.Player bukkitPlayer = player.getBukkitEntity();
-        Integer damageTick = damageTicks.get(player);
-
-        if ((damageTick != null && damageTick + 10 > tickCount) || this.isDeadOrDying()) {
-            return false;
-        }
-
-        damageTicks.put(player, tickCount);
-
-        DamageSource source = player.damageSources().playerAttack(player);
-
-        {
-            double kbMulti = (player.isSprinting() ? 2.0 : 1.0);
-            this.knockback(kbMulti * 0.5F, Mth.sin(player.getYRot() * ((float) Math.PI / 180F)), -Mth.cos(player.getYRot() * ((float) Math.PI / 180F)), player, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.ENTITY_ATTACK);
-
-            this.getBukkitLivingEntity().playHurtAnimation(player.getBukkitYaw());
-            if (crit) {
-                bukkitPlayer.getWorld().playSound(bukkitPlayer.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.0f);
-            } else {
-                bukkitPlayer.getWorld().playSound(bukkitPlayer.getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1.0f, 1.0f);
-            }
-
-            handleDamageEvent(source);
-        }
-
-        {
-            if (damages.containsKey(player)) {
-                damages.put(player, damages.get(player) + damage);
-            } else {
-                damages.put(player, damage);
-            }
-        }
-
-        this.setHealth(getHealth() - (float) damage);
-
-        if (this.isDeadOrDying() && !this.dead) {
-            this.die(source);
-        }
-
-        updateDisplayName();
-
-        return true;
+        return customAttackByPlayer(player, damage, crit, this);
     }
 
     @Override
@@ -119,6 +78,18 @@ public abstract class CustomWolf extends Wolf implements CustomCreature {
         }
 
         return damagers;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public Map<ServerPlayer, Double> getDamages() {
+        return damages;
+    }
+
+    public Map<ServerPlayer, Integer> getDamageTicks() {
+        return damageTicks;
     }
 
     public PathfinderMob getMob() {

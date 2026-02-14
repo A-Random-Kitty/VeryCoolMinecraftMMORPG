@@ -1,17 +1,12 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.creatures;
 
-import me.randomkitty.verycoolminecraftmmorpg.entities.DefaultLootDrop;
-import me.randomkitty.verycoolminecraftmmorpg.entities.RareLootDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.drops.DefaultLootDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.drops.RareLootDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomPathfinderMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.Cat;
-import net.minecraft.world.entity.monster.Zombie;
-import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Map;
 
 public class ZombieCreature extends CustomPathfinderMob {
 

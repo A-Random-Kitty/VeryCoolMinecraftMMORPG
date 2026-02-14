@@ -46,6 +46,7 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
         manager.registerEvents(new InventoryEvents(), this);
         manager.registerEvents(new PlayerEvents(), this);
         manager.registerEvents(new CommandAndChatEvents(), this);
+        manager.registerEvents(new ExplosiveEvents(), this);
 
         this.getCommand("shop").setExecutor(new ShopCommand());
         this.getCommand("openshop").setExecutor(new OpenShopForPlayerCommand());
@@ -56,6 +57,7 @@ public final class VeryCoolMinecraftMMORPG extends JavaPlugin {
         this.getCommand("givebook").setExecutor(new EnchantedBookCommand());
         this.getCommand("loadspawners").setExecutor(new LoadSpawnersCommand());
         this.getCommand("loadconfig").setExecutor(new LoadConfigCommand());
+        this.getCommand("conditionaltp").setExecutor(new ConditionalTpCommand());
 
         //CustomEntityType.register();
 

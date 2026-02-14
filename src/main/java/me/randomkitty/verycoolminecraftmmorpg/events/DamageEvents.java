@@ -76,10 +76,17 @@ public class DamageEvents implements Listener {
     public void onDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
 
+            if (player.hasMetadata("NPC")) { return; }  // Make sure citizens npc aren't processed as players
+
             if (event instanceof EntityDamageByEntityEvent entityEvent) {
 
-                if (entityEvent.getDamager() instanceof Player) {
-                    event.setCancelled(true);
+                if (entityEvent.getDamager() instanceof Player playerDamager) {
+                    if (playerDamager.getGameMode() == GameMode.CREATIVE) {
+                        event.setDamage(PlayerAttributes.getAttributes(player).getDamageAfterDefence(PlayerAttributes.getAttributes(playerDamager).damage));
+                    } else {
+                        event.setCancelled(true);
+                    }
+
                     return;
                 } else if (((CraftEntity) entityEvent.getDamager()).getHandle() instanceof CustomCreature) {
                     onCustomEntityDamagePlayer(entityEvent, player);;
@@ -126,8 +133,12 @@ public class DamageEvents implements Listener {
 
     private void onNaturalDamagePlayer(EntityDamageEvent event, Player player) {
         PlayerAttributes attributes = PlayerAttributes.getAttributes(player);
+        if (event.getCause() != EntityDamageEvent.DamageCause.VOID) {
+            event.setDamage(attributes.getDamageAfterDefence(event.getDamage()));
+        } else {
+            event.setDamage(player.getAttribute(Attribute.MAX_HEALTH).getValue()/5);
+        }
 
-        event.setDamage(attributes.getDamageAfterDefence(event.getDamage()));
     }
 
     private  void onCustomEntityDamagePlayer(EntityDamageByEntityEvent event, Player player) {

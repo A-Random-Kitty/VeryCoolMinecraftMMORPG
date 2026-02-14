@@ -30,7 +30,7 @@ public class PlayerCurrency extends PlayerDataValue {
     private double coins;
 
     public PlayerCurrency(Player player) {
-        super();
+        super(player);
         playerCurrencyMap.put(player.getUniqueId(), this);
     }
 

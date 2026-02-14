@@ -1,12 +1,11 @@
-package me.randomkitty.verycoolminecraftmmorpg.entities;
+package me.randomkitty.verycoolminecraftmmorpg.entities.drops;
 
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItem;
-import me.randomkitty.verycoolminecraftmmorpg.item.Rarity;
+import me.randomkitty.verycoolminecraftmmorpg.util.StringUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
@@ -35,7 +34,7 @@ public class RareLootDrop {
 
     public TextComponent getMessage() {
 
-            return Component.text(item.getRarity().getText() + "DROP!", item.getRarity().getColor(), TextDecoration.BOLD).append(item.getColoredName()).append(Component.text(" (" + (chance * 100) + ")", NamedTextColor.AQUA));
+            return Component.text(item.getRarity().getText() + " DROP! ", item.getRarity().getColor(), TextDecoration.BOLD).append(item.getColoredName().append(Component.text(" [" + StringUtil.formatedDouble(chance * 100) + "%]", NamedTextColor.AQUA)).decoration(TextDecoration.BOLD, false));
     }
 
     public boolean shouldTellPlayer() {

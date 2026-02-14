@@ -1,8 +1,8 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures;
 
 
-import me.randomkitty.verycoolminecraftmmorpg.entities.DefaultLootDrop;
-import me.randomkitty.verycoolminecraftmmorpg.entities.RareLootDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.drops.DefaultLootDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.drops.RareLootDrop;
 import me.randomkitty.verycoolminecraftmmorpg.util.ItemDropUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -19,9 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public interface CustomBoss extends CustomCreature {
 
@@ -33,27 +31,9 @@ public interface CustomBoss extends CustomCreature {
 
 
         for (Map.Entry<Player, Double> entry : damagers.entrySet()) {
-            Player player = entry.getKey();
-            player.sendMessage(bossDownComponent);
-
-            Location dropLocation = new Location(mob.level().getWorld(), mob.getX(), mob.getY(), mob.getZ());
-
-            for (RareLootDrop rareDrop : getRareDrops()) {
-                if (rareDrop.shouldDrop()) {
-                    ItemDropUtil.givePlayerLootOrDrop(player, rareDrop.getItem(), dropLocation);
-
-                    if (rareDrop.shouldTellPlayer()) {
-                        player.sendMessage(rareDrop.getMessage());
-                    }
-                }
+            if (entry.getValue() >= mob.getMaxHealth() / (damagers.size() * 2)) {
+                givePlayerBossLoot(mob, entry.getKey(), entry.getValue(), bossDownComponent);
             }
-
-            for (DefaultLootDrop defaultDrop : getDefaultDrops()) {
-                ItemDropUtil.givePlayerLootOrDrop(player, defaultDrop.getDrop(), dropLocation);
-            }
-
-            ItemDropUtil.givePlayerCoinsAndDrop(player, getBaseCoinDrop(), mob);
-            ItemDropUtil.givePlayerCombatXpAndDrop(player, getBaseXpDrop(), mob);
         }
 
         // Don't pass custom drops to EntityDeathEvent because drops are done in a custom way
@@ -66,6 +46,28 @@ public interface CustomBoss extends CustomCreature {
 
         mob.drops = new ArrayList<>();
         return deathEvent;
+    }
 
+    default void givePlayerBossLoot(PathfinderMob mob, Player player, double damage, TextComponent bossDownComponent) {
+        player.sendMessage(bossDownComponent);
+
+        Location dropLocation = new Location(mob.level().getWorld(), mob.getX(), mob.getY(), mob.getZ());
+
+        for (RareLootDrop rareDrop : getRareDrops()) {
+            if (rareDrop.shouldDrop()) {
+                ItemDropUtil.givePlayerLootOrDrop(player, rareDrop.getItem(), dropLocation);
+
+                if (rareDrop.shouldTellPlayer()) {
+                    player.sendMessage(Component.text(" - ", NamedTextColor.GRAY).append(rareDrop.getMessage()));
+                }
+            }
+        }
+
+        for (DefaultLootDrop defaultDrop : getDefaultDrops()) {
+            ItemDropUtil.givePlayerLootOrDrop(player, defaultDrop.getDrop(), dropLocation);
+        }
+
+        ItemDropUtil.givePlayerCoinsAndDrop(player, getBaseCoinDrop(), mob);
+        ItemDropUtil.givePlayerCombatXpAndDrop(player, getBaseXpDrop(), mob);
     }
 }

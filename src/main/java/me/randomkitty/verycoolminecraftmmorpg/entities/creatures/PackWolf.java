@@ -1,7 +1,7 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.creatures;
 
-import me.randomkitty.verycoolminecraftmmorpg.entities.DefaultLootDrop;
-import me.randomkitty.verycoolminecraftmmorpg.entities.RareLootDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.drops.DefaultLootDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.drops.RareLootDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomWolf;
 import me.randomkitty.verycoolminecraftmmorpg.entities.pathfinder.StayCloseToOrginGoal;
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
@@ -9,7 +9,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 
@@ -35,9 +34,9 @@ public class PackWolf extends CustomWolf {
         super(world);
 
         this.getAttributes().registerAttribute(Attributes.ATTACK_DAMAGE);
-        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(20);
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(125);
-        this.setHealth(50);
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(15);
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(80);
+        this.setHealth(80);
 
         this.updateDisplayName();
     }

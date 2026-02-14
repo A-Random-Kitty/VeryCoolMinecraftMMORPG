@@ -1,4 +1,4 @@
-package me.randomkitty.verycoolminecraftmmorpg.entities;
+package me.randomkitty.verycoolminecraftmmorpg.entities.drops;
 
 import me.randomkitty.verycoolminecraftmmorpg.item.CustomItem;
 import org.bukkit.inventory.ItemStack;

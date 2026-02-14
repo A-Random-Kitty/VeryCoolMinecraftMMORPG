@@ -35,6 +35,8 @@ public class PlayerEvents implements Listener {
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
+
+
     }
 
     @EventHandler

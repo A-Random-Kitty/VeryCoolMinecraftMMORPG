@@ -1,41 +1,49 @@
 package me.randomkitty.verycoolminecraftmmorpg.entities.creatures.bosses;
 
-import me.randomkitty.verycoolminecraftmmorpg.VeryCoolMinecraftMMORPG;
 import me.randomkitty.verycoolminecraftmmorpg.entities.CustomCreatureType;
-import me.randomkitty.verycoolminecraftmmorpg.entities.DefaultLootDrop;
-import me.randomkitty.verycoolminecraftmmorpg.entities.RareLootDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.drops.DefaultLootDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.drops.RareBookDrop;
+import me.randomkitty.verycoolminecraftmmorpg.entities.drops.RareLootDrop;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomBoss;
 import me.randomkitty.verycoolminecraftmmorpg.entities.abstractcreatures.CustomWolf;
 import me.randomkitty.verycoolminecraftmmorpg.entities.pathfinder.BetterMeleeAttackGoal;
 import me.randomkitty.verycoolminecraftmmorpg.entities.pathfinder.StayCloseToOrginGoal;
+import me.randomkitty.verycoolminecraftmmorpg.item.CustomItems;
+import me.randomkitty.verycoolminecraftmmorpg.item.modifier.ItemModifiers;
+import me.randomkitty.verycoolminecraftmmorpg.player.PlayerAccomplishments;
+import net.kyori.adventure.text.TextComponent;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.BossEvent;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.wolf.WolfSoundVariants;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraft.world.entity.monster.Zombie;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.EnderDragon;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class AlphaWolfBoss extends CustomWolf implements CustomBoss {
+
+    private static final List<DefaultLootDrop> defaultDrops = new ArrayList<>();
+    private static final List<RareLootDrop> rareDrops = new ArrayList<>();
+
+    private static final DefaultLootDrop alphaWolfPeltDrop = new DefaultLootDrop(1, 2, CustomItems.ALPHA_WOLF_PELT);
+    private static final RareLootDrop ancientWolfFangDrop = new RareLootDrop(0.02f, CustomItems.ANCIENT_WOLF_FANG, true);
+    private static final RareBookDrop sharpnessBookDrop = new RareBookDrop(0.02f, ItemModifiers.SHARPNESS_ENCHANT, 1);
+
+    static {
+        defaultDrops.add(alphaWolfPeltDrop);
+        rareDrops.add(ancientWolfFangDrop);
+        rareDrops.add(sharpnessBookDrop);
+    }
 
     private StayCloseToOrginGoal stayCloseToOrginGoal;
     private BetterMeleeAttackGoal meleeAttackGoal;
@@ -48,9 +56,10 @@ public class AlphaWolfBoss extends CustomWolf implements CustomBoss {
         super(world);
 
         this.getAttributes().registerAttribute(Attributes.ATTACK_DAMAGE);
-        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(50);
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000);
-        this.setHealth(1000);
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(25);
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(750);
+        this.setHealth(750);
+        lastHealth = 750;
 
         this.bossBar = (ServerBossEvent)(new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
         this.updateDisplayName();
@@ -67,20 +76,29 @@ public class AlphaWolfBoss extends CustomWolf implements CustomBoss {
         this.stayCloseToOrginGoal = new StayCloseToOrginGoal(this, 15);
         goalSelector.addGoal(4, stayCloseToOrginGoal);
 
-        targetSelector.addGoal(1, new HurtByTargetGoal(this, Player.class));
-        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
 
     }
 
+    @Override
     public boolean customAttackByPlayer(ServerPlayer player, double damage, boolean crit) {
         boolean temp = super.customAttackByPlayer(player, damage, crit);
+        this.setTarget(player, EntityTargetEvent.TargetReason.TARGET_ATTACKED_ENTITY);
         if (temp && lastHealth > 500 && this.getHealth() <= 500 && this.isAlive()) {
             CustomCreatureType.PACK_WOLF.spawnNewCreature(this.getBukkitEntity().getLocation().subtract(1, 0, 1));
             CustomCreatureType.PACK_WOLF.spawnNewCreature(this.getBukkitEntity().getLocation().add(1, 0, 1));
         }
+        lastHealth = this.getHealth();
         return temp;
     }
 
+    @Override
+    public void givePlayerBossLoot(PathfinderMob mob, org.bukkit.entity.Player player, double damage, TextComponent bossDownComponent) {
+        if (damage >= 100) {
+            CustomBoss.super.givePlayerBossLoot(mob, player, damage, bossDownComponent);
+            PlayerAccomplishments.grantAccomplishment(player, "alpha_wolf_slain");
+        }
+    }
 
     @Override
     public void onPostSpawn() {
@@ -112,6 +130,8 @@ public class AlphaWolfBoss extends CustomWolf implements CustomBoss {
         this.bossBar.removePlayer(player);
     }
 
+
+
     @Override
     public double getBaseCoinDrop() {
         return 500;
@@ -124,12 +144,12 @@ public class AlphaWolfBoss extends CustomWolf implements CustomBoss {
 
     @Override
     public List<DefaultLootDrop> getDefaultDrops() {
-        return List.of();
+        return defaultDrops;
     }
 
     @Override
     public List<RareLootDrop> getRareDrops() {
-        return List.of();
+        return rareDrops;
     }
 
     @Override
